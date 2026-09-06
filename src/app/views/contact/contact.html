@@ -1,0 +1,45 @@
+ <!-- Contact Section -->
+  <section id="contact" class="contact section">
+
+    <!-- Section Title -->
+    <div class="container section-title aos-init " data-aos="fade-up">
+      <h2>Get In Touch</h2>
+      <p>Tell me about your project and I'll be in touch shortly</p>
+    </div><!-- End Section Title -->
+
+    <div class="container aos-init " data-aos="fade-up" data-aos-delay="100">
+
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+
+          <div class="quick">
+            <a href=""><i class="bi bi-envelope"></i> arun70840@gmail.com</a>
+            <a href=""><i class="bi bi-telephone"></i> 7892006634</a>
+            <span><i class="bi bi-geo-alt"></i> Ejipura, Bangalore 560047</span>
+          </div>
+
+          <form class="php-email-form" [formGroup]="contactForm" (ngSubmit)="onSubmit()">
+            <div class="row gy-3">
+              <div class="col-md-6"><input type="text" formControlName="name" name="name" class="form-control"
+                  placeholder="Your Name" [class.error-input]="errorList.includes(`Name can't be empty`)"></div>
+              <div class="col-md-6"><input type="text" formControlName="phone" name="phone" maxlength="10"
+                  class="form-control" placeholder="Phone"
+                  [class.error-input]="errorList.includes(`Phone number can't be empty`)"></div>
+              <div class="col-12"><input type="email" formControlName="email" name="email" class="form-control"
+                  placeholder="Your Email" [class.error-input]="errorList.includes(`Email can't be empty`)"></div>
+              <div class="col-12"><textarea name="message" formControlName="message" class="form-control" rows="6"
+                  placeholder="Your Message"
+                  [class.error-input]="errorList.includes(`Message can't be empty`)"></textarea></div>
+              <div class="col-12 text-center">
+                <div class="sent-message" [class.active]="successMessage">Your message has been sent. Thank you!</div>
+                <button type="submit" class="btn-submit" *ngIf="!successMessage">Send Message</button>
+              </div>
+            </div>
+          </form>
+
+        </div>
+      </div>
+
+    </div>
+
+  </section><!-- /Contact Section -->

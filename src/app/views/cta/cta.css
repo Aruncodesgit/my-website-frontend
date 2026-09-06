@@ -1,0 +1,22 @@
+
+#projectModal section {
+    padding: 0;
+}
+
+#projectModal .modal-body {
+    background-color: #0a1020;
+}
+#projectModal .php-email-form {
+    background: transparent;
+    border: 0;
+    padding:25px 0px;
+}
+
+#projectModal .modal-header {
+        background-color: #0a1020;
+    border-bottom: 1px solid #2f3237;
+}
+#projectModal .btn-close {
+    filter: brightness(1) invert(1);
+}
+    
