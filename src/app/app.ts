@@ -40,6 +40,16 @@ export class App implements AfterViewInit, OnInit {
       phone: ['', [Validators.required]],
       message: ['', [Validators.required]]
     });
+
+    const preloader = document.getElementById('preloader');
+
+    if (preloader) {
+      preloader.style.opacity = '0';
+
+      setTimeout(() => {
+        preloader.remove();
+      }, 500);
+    }
   }
 
   toggleMenu(value:any) {
