@@ -13,6 +13,7 @@ export class Contact {
   successMessage: boolean = false;
   errorList: any = []
   isMenuActive = 1
+  isLoading: boolean = false;
   constructor(private fb: FormBuilder, private common: Common, private cdr: ChangeDetectorRef) { }
 
 
@@ -37,19 +38,22 @@ export class Contact {
   }
 
   onSubmit() {
+    this.isLoading = true;
     this.common.contact(this.contactForm.value).subscribe({
       next: (res: any) => {
         console.log(res);
         this.successMessage = true;
-
+        this.isLoading = false;
         setTimeout(() => {
           this.successMessage = false;
           this.contactForm.reset()
+          this.isLoading = false;
         }, 2000);
         this.cdr.detectChanges()
       },
 
       error: (err: any) => {
+         this.isLoading = false;
         this.errorList = err.error;
         setTimeout(() => {
           this.errorList = [];

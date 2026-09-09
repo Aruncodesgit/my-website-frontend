@@ -1,0 +1,26 @@
+
+<section *ngIf="isMobile">
+    <div class="row">
+        <div class="col-md-12">
+            <header>
+                <ul>
+                    <li>
+                        <p>Username</p>
+                        <span class="status" *ngIf="isOnline">Online</span>
+                        <span class="lastsceen" *ngIf="!isOnline">last sceen 19:53</span>
+                    </li>
+                    <li>
+                        <button><i class="bi bi-box-arrow-right"></i></button>
+                    </li>
+                </ul>
+            </header>
+            <div class="messages">
+
+            </div>
+            <div class="text">
+                <textarea type="text" placeholder="Type a message..." ></textarea>
+                <button><i class="bi bi-send"></i></button>
+            </div>
+        </div>
+    </div>
+</section>

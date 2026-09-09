@@ -32,7 +32,8 @@
                   [class.error-input]="errorList.includes(`Message can't be empty`)"></textarea></div>
               <div class="col-12 text-center">
                 <div class="sent-message" [class.active]="successMessage">Your message has been sent. Thank you!</div>
-                <button type="submit" class="btn-submit" *ngIf="!successMessage">Send Message</button>
+                <button type="submit" class="btn-submit" *ngIf="!successMessage && !isLoading">Send Message</button>
+                <div class="loading" [class.active]="isLoading"></div>
               </div>
             </div>
           </form>

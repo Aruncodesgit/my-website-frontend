@@ -11,7 +11,14 @@ export class Common {
 
   contact(data: any) {
     return this.http.post(
-      environment.apiProdUrl + '/contact',
+      environment.apiBaseUrl + '/contact',
+      data
+    );
+  }
+
+  login(data: any) {
+    return this.http.post(
+      environment.apiBaseUrl + '/login',
       data
     );
   }

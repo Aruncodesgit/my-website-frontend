@@ -1,0 +1,44 @@
+<ng-container *ngIf="isMobile">
+    <section>
+        <div class="row">
+            <div class="col-md-12">
+                <header>
+                    <ul>
+                        <li>
+                            Login
+                        </li>
+                    </ul>
+                </header>
+            </div>
+        </div>
+    </section>
+    <!-- Contact Section -->
+    <section id="contact" class="contact section">
+
+        <div class="container aos-init aos-animate" data-aos="fade-up" data-aos-delay="100">
+
+            <div class="row justify-content-center">
+                <div class="col-lg-12">
+
+                    <form class="php-email-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+                        <div class="row gy-3">
+                            <div class="col-md-12"><input type="text" formControlName="email" name="name"
+                                    class="form-control" placeholder="Email"></div>
+                            <div class="col-md-12"><input type="text" formControlName="password" name="phone"
+                                    class="form-control" placeholder="Password"></div>
+
+                            <div class="col-12 text-center">
+                                <!-- <div class="sent-message" [class.active]="successMessage">Your message has been sent. Thank
+                                you!</div> -->
+                                <button type="submit" class="btn-submit">Login</button>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+
+    </section><!-- /Contact Section -->
+</ng-container>

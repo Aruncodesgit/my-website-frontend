@@ -1,0 +1,21 @@
+section {
+    padding: 0px;
+
+    header {
+        background-color: #093056;
+        padding: 14px 20px;
+        position: sticky;
+        width: 100%;
+        color: #fff;
+
+        ul {
+            list-style: none;
+            padding: 0px;
+            margin-bottom: 0;
+        }
+    }
+
+    .php-email-form {
+        margin-top: 100px;
+    }
+}
