@@ -23,4 +23,8 @@ export class Common {
     );
   }
 
+
+  getToken()  {
+     return localStorage.getItem('token');
+  }
 }

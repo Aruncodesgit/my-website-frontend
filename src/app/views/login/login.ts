@@ -32,6 +32,7 @@ export class Login implements OnInit {
     this.common.login(this.loginForm.value).subscribe(
       (response: any) => {
         console.log('Login successful:', response);
+         localStorage.setItem('token', response.token);
       },
       (error: any) => {
         console.error('Login failed:', error);

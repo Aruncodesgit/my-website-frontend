@@ -14,7 +14,7 @@ export class Chat {
     this.breakpointObserver
       .observe(['(max-width: 767px)'])
       .subscribe(result => {
-        this.isOnline = result.matches; 
+        this.isMobile = result.matches; 
       });
 }
 
