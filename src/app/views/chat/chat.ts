@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { Common } from '../../services/common';
 import { Router } from '@angular/router';
@@ -12,7 +12,7 @@ import { switchMap } from 'rxjs/operators';
   styleUrl: './chat.css',
   templateUrl: './chat.html',
 })
-export class Chat implements OnInit, OnDestroy, AfterViewInit {
+export class Chat implements OnInit, OnDestroy {
   isOnline: boolean = true;
   isMobile: boolean = false;
   userId: any;
@@ -47,12 +47,7 @@ export class Chat implements OnInit, OnDestroy, AfterViewInit {
     this.getConversations()
 
 
-  }
-  ngAfterViewInit() {
-    setTimeout(() => {
-      this.messageInput.nativeElement.focus();
-    });
-  }
+  } 
 
 
   getConversations() {
