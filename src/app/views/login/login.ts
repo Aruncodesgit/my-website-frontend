@@ -14,7 +14,7 @@ import { Router } from '@angular/router';
 export class Login implements OnInit {
   loginForm: any;
   isMobile: boolean = false;
-  isLoggedIn: boolean = false;
+  isLoaderVisible: boolean = false;
   constructor(private breakpointObserver: BreakpointObserver, private fb: FormBuilder, private common: Common,
     private router: Router
   ) {
@@ -33,7 +33,7 @@ export class Login implements OnInit {
 
   }
   onSubmit() {
-    this.isLoggedIn = true
+    this.isLoaderVisible = true
     this.common.login(this.loginForm.value).subscribe(
       (response: any) => {
         console.log('Login successful:', response);
@@ -42,13 +42,13 @@ export class Login implements OnInit {
 
         localStorage.setItem('userId', response.user.id);
         this.router.navigate(['/chat']);
-        this.isLoggedIn = false
+        this.isLoaderVisible = false
       },
       (error: any) => {
         setTimeout(() => {
-           this.isLoggedIn = false
+           this.isLoaderVisible = false
         }, 2000);
-        console.error('Login failed:', error);
+        console.log('Login failed:', error);
       }
     );
   }
