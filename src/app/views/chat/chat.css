@@ -1,6 +1,13 @@
 section.keyboard-open {
     height: calc(100dvh - 200px);
 }
+section.keyboard-open .messages {
+        inset: 60px 14px 210px!important;
+}
+section.keyboard-open .text {
+       top:52vh!important;
+       position: relative!important;
+}
 section {
     height: 100dvh;
     overflow: hidden;
