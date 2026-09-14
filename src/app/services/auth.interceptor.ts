@@ -10,16 +10,7 @@ import { Common } from "./common";
 export class AuthInterceptor implements HttpInterceptor {
 
     constructor(private common : Common,private router : Router, private injector :Injector){}
-
-    // intercept(req: HttpRequest<any>, next: HttpHandler) {
-    //     let authService = this.injector.get(ApiService)
-    //     let tokenizedReq = req.clone({
-    //         setHeaders :{
-    //             Authorization: `Bearer ${authService.getToken()}`
-    //         }
-    //     })
-    //     return next.handle(tokenizedReq)
-    // }
+ 
  
     intercept(req: HttpRequest<any>, next: HttpHandler) {
         if (req.headers.get('noauth'))
@@ -31,13 +22,7 @@ export class AuthInterceptor implements HttpInterceptor {
                 
             });
             return next.handle(clonedreq).pipe(
-                // tap(
-                //     event => { },
-                //     err => {
-                //         if (err.error.auth == false) {
-                //             this.router.navigateByUrl('/emp-login');
-                //         }
-                //     })
+               
             );
         }
          

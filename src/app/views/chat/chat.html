@@ -1,25 +1,45 @@
-
 <section *ngIf="isMobile">
     <div class="row">
         <div class="col-md-12">
             <header>
                 <ul>
-                    <li>
-                        <p>Username</p>
-                        <span class="status" *ngIf="isOnline">Online</span>
-                        <span class="lastsceen" *ngIf="!isOnline">last sceen 19:53</span>
+                    <li [class.increase]="userName == 'A02'">
+                        <div class="profile">
+                           <i class="bi bi-person"></i>
+                        </div>
+                        <div>
+                            <p>{{receiverUserName}}</p>
+                        <span class="status" *ngIf="receiverisOnline">Online</span>
+                        <span class="lastsceen" *ngIf="!receiverisOnline">last sceen {{formatLastSeen(receiverLastSeen) }}</span>
+                        </div> 
                     </li>
                     <li>
-                        <button><i class="bi bi-box-arrow-right"></i></button>
+                        <button *ngIf="userName == 'A01'" (click)="deleteAllMessages()"><i class="bi bi-trash"></i></button>
+                        <button (click)="logout()"><i class="bi bi bi-power"></i></button>
                     </li>
                 </ul>
             </header>
             <div class="messages">
+                <div *ngFor="let msg of messageData" [ngClass]="msg.senderId === userId ? 'sent' : 'received'">
+                    <span  (click)="clickMessage(msg._id)"> {{msg.text}}
+                        <b>{{msg.createdAt | date:'h:mm a'}}
+                            <p *ngIf="msg.isRead == false && msg.senderId == userId"><i class="bi bi-check2"></i></p>
+                            <p *ngIf="msg.isRead == true && msg.senderId == userId"><i class="bi bi-check2-all"></i></p>
+
+                        </b>
+                    </span>
+                    <div class="drpDown" *ngIf="msg.senderId == userId" [class.active]="showCopyId == msg._id">
+                        <ul>
+                            <li><i class="bi bi-clipboard2"></i></li>
+                            <li (click)="deleteMessageById(msg._id)"><i class="bi bi-trash"></i></li>
+                        </ul>
+                    </div>
+                </div>
 
             </div>
             <div class="text">
-                <textarea type="text" placeholder="Type a message..." ></textarea>
-                <button><i class="bi bi-send"></i></button>
+                <textarea type="text" placeholder="Type a message..." #messageInput [(ngModel)]="text"></textarea>
+                <button (click)="sendMessage()"><i class="bi bi-send"></i></button>
             </div>
         </div>
     </div>
