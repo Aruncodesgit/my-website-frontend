@@ -1,3 +1,6 @@
+section.keyboard-open {
+    height: calc(100dvh - 200px);
+}
 section {
     height: 100dvh;
     overflow: hidden;

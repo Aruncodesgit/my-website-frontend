@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { Common } from '../../services/common';
 import { Router } from '@angular/router';
@@ -139,14 +139,20 @@ export class Chat implements OnInit, OnDestroy {
       });
   }
 
+  @HostListener('document:click', ['$event'])
+onDocumentClick(event: MouseEvent) {
+  this.isMessageFocused = false;
+}
 
   sendMessage() {
     this.common.sendMessage({ conversationId: this.conversationId, receiverId: this.receiverId, text: this.text }).subscribe(
       (response: any) => {
+        this.isMessageFocused = false;
         console.log('Message sent successfully:', response);
         this.text = '';
         setTimeout(() => {
           this.messageInput.nativeElement.focus();
+          this.isMessageFocused = true;
         });
         this.cdr.detectChanges()
       },

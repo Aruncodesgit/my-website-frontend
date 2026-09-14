@@ -1,4 +1,4 @@
-<section *ngIf="isMobile">
+<section *ngIf="isMobile" [class.keyboard-open]="isMessageFocused">
     <div class="row">
         <div class="col-md-12">
             <header>
@@ -19,7 +19,7 @@
                     </li>
                 </ul>
             </header>
-            <div class="messages" [class.keyboard-open]="isMessageFocused">
+            <div class="messages" >
                 <div *ngFor="let msg of messageData" [ngClass]="msg.senderId === userId ? 'sent' : 'received'">
                     <span  (click)="clickMessage(msg._id)"> {{msg.text}}
                         <b>{{msg.createdAt | date:'h:mm a'}}
@@ -37,7 +37,7 @@
                 </div>
 
             </div>
-            <div class="text">
+            <div class="text"  (click)="focusMessage($event)">
                 <textarea type="text" placeholder="Type a message..." #messageInput  (focus)="isMessageFocused = true"
   (blur)="isMessageFocused = false" [(ngModel)]="text"></textarea>
                 <button (click)="sendMessage()"><i class="bi bi-send"></i></button>
