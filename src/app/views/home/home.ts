@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, ChangeDetectorRef, Component, OnInit, signal } from '@angular/core';
-import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { RouterOutlet } from '@angular/router';
+import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms'; 
 import { Common } from '../../services/common';
 import { About } from '../about/about';
 import { Contact } from '../contact/contact';
@@ -12,7 +11,7 @@ import { WhatYouGet } from '../what-you-get/what-you-get';
 import { Work } from '../work/work';
 declare var AOS: any;
 @Component({
-  imports: [CommonModule, RouterOutlet, ReactiveFormsModule, Contact, About, Services, Work, WhatYouGet, HowIwork, Cta],
+  imports: [CommonModule, ReactiveFormsModule, Contact, About, Services, Work, WhatYouGet, HowIwork, Cta],
   selector: 'app-home',
   styleUrl: './home.css',
   templateUrl: './home.html',
