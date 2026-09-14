@@ -19,7 +19,7 @@
                     </li>
                 </ul>
             </header>
-            <div class="messages">
+            <div class="messages" [class.keyboard-open]="isMessageFocused">
                 <div *ngFor="let msg of messageData" [ngClass]="msg.senderId === userId ? 'sent' : 'received'">
                     <span  (click)="clickMessage(msg._id)"> {{msg.text}}
                         <b>{{msg.createdAt | date:'h:mm a'}}
@@ -38,7 +38,8 @@
 
             </div>
             <div class="text">
-                <textarea type="text" placeholder="Type a message..." #messageInput [(ngModel)]="text"></textarea>
+                <textarea type="text" placeholder="Type a message..." #messageInput  (focus)="isMessageFocused = true"
+  (blur)="isMessageFocused = false" [(ngModel)]="text"></textarea>
                 <button (click)="sendMessage()"><i class="bi bi-send"></i></button>
             </div>
         </div>

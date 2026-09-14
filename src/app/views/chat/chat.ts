@@ -29,7 +29,8 @@ export class Chat implements OnInit, OnDestroy, AfterViewInit {
   receiverisOnline: any;
   @ViewChild('messageInput') messageInput!: ElementRef;
   showCopyId: any = null;
-  isLoaderVisible:boolean = false
+  isLoaderVisible:boolean = false;
+  isMessageFocused = false;
   constructor(private breakpointObserver: BreakpointObserver, private common: Common, private router: Router, private cdr: ChangeDetectorRef) {
     this.breakpointObserver
       .observe(['(max-width: 767px)'])

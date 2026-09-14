@@ -88,7 +88,9 @@ section {
             }
         }
     }
-
+    .messages.keyboard-open {
+  height: calc(80dvh - 200px);
+}
     .messages {
         height: 80dvh;
         width: 91%;
