@@ -29,6 +29,7 @@ export class Chat implements OnInit, OnDestroy, AfterViewInit {
   receiverisOnline: any;
   @ViewChild('messageInput') messageInput!: ElementRef;
   showCopyId: any = null;
+  isLoaderVisible:boolean = false
   constructor(private breakpointObserver: BreakpointObserver, private common: Common, private router: Router, private cdr: ChangeDetectorRef) {
     this.breakpointObserver
       .observe(['(max-width: 767px)'])
@@ -164,6 +165,7 @@ export class Chat implements OnInit, OnDestroy, AfterViewInit {
   logout() {
     const id = localStorage.getItem('userId');
 
+     this.isLoaderVisible = true;
     if (!id) {
       localStorage.removeItem('token');
       this.router.navigate(['/login']);
@@ -172,12 +174,14 @@ export class Chat implements OnInit, OnDestroy, AfterViewInit {
 
     this.common.logout(id).subscribe(
       (response: any) => {
+        this.isLoaderVisible = false
         this.router.navigate(['/login']);
         localStorage.removeItem('token');
         localStorage.removeItem('userId');
         localStorage.removeItem('userName');
       },
       (error: any) => {
+          this.isLoaderVisible = false
         console.error('Logout failed:', error);
       }
     );
@@ -201,12 +205,19 @@ export class Chat implements OnInit, OnDestroy, AfterViewInit {
   }
 
   deleteAllMessages() {
+     this.isLoaderVisible = true;
     this.common.deleteAllMessages().subscribe(
       (response: any) => {
+        setTimeout(() => {
+         this.isLoaderVisible = false;
+       }, 1000);
         this.messageData = [];
         this.cdr.detectChanges();
       },
       (error: any) => {
+        setTimeout(() => {
+         this.isLoaderVisible = false;
+       }, 1000);
         console.error('Failed to delete all messages:', error);
       }
     );
@@ -223,9 +234,19 @@ export class Chat implements OnInit, OnDestroy, AfterViewInit {
   }
 
   deleteMessageById(id: string) {   
-    this.common.deleteById(id).subscribe(res => {
-
-    })
+    this.isLoaderVisible = true;
+    this.common.deleteById(id).subscribe(res => { 
+      if(res) {
+       setTimeout(() => {
+         this.isLoaderVisible = false;
+       }, 1000);
+      } 
+    },
+      (error: any) => {
+        setTimeout(() => {
+             this.isLoaderVisible = false;
+        }, 1000);
+      })
 
   }
 

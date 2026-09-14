@@ -19,3 +19,15 @@ section {
         margin-top: 100px;
     }
 }
+ 
+
+#preloader {
+            background: rgba(0, 0, 0, .5)!important;
+    }
+  #preloader.hide {
+    display: none;
+  } 
+ #preloader.block {
+    display: flex;
+  } 
+ 
