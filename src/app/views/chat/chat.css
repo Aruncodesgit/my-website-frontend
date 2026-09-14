@@ -3,9 +3,9 @@ section {
 
     header {
 
-        position: sticky;
-        color: #fff;
-
+        position: fixed;
+        color: #fff;    
+            width: 100%;
         ul {
             list-style: none;
             padding: 0px;
@@ -96,7 +96,7 @@ section {
         width: 91%;
         margin: auto;
         overflow-y: auto;
-
+            margin-top: 54px;
         .sent {
 
             color: #fff;
