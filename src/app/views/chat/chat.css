@@ -1,11 +1,16 @@
 section {
-    padding: 0px;
+    height: 100dvh;
+    overflow: hidden;
 
     header {
 
         position: fixed;
-        color: #fff;    
-            width: 100%;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 60px;
+        z-index: 9999;
+        color: #fff;
         ul {
             list-style: none;
             padding: 0px;
@@ -88,13 +93,15 @@ section {
             }
         }
     }
-    
+
     .messages {
-        height: 80dvh;
-        width: 91%;
-        margin: auto;
+        position: absolute;
+        top: 60px;
+        bottom: 65px;
+            left: 14px;
+    right: 14px;
         overflow-y: auto;
-            margin-top: 54px;
+
         .sent {
 
             color: #fff;
@@ -209,11 +216,17 @@ section {
     }
 
     .text {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 65px;
+        z-index: 9999;
         display: flex;
         justify-content: space-between;
         align-items: center;
         width: 90%;
-        margin: auto; 
+        margin: auto;
         bottom: 12px;
         left: 0;
         right: 0;
@@ -236,8 +249,8 @@ section {
             padding: 9px 16px;
             border-radius: 8px;
             border: none;
-                background: linear-gradient(135deg, #00c722, 
-color-mix(in srgb, #11bd29 70%, #adefbd));
+            background: linear-gradient(135deg, #00c722,
+                    color-mix(in srgb, #11bd29 70%, #adefbd));
             color: var(--contrast-color);
             font-weight: 600;
             font-size: 22px;
@@ -248,13 +261,14 @@ color-mix(in srgb, #11bd29 70%, #adefbd));
 
 }
 
-    #preloader {
-            background: rgba(0, 0, 0, .5)!important;
-    }
-  #preloader.hide {
+#preloader {
+    background: rgba(0, 0, 0, .5) !important;
+}
+
+#preloader.hide {
     display: none;
-  } 
- #preloader.block {
+}
+
+#preloader.block {
     display: flex;
-  } 
- 
+}
