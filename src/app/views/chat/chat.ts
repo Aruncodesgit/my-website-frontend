@@ -41,8 +41,8 @@ export class Chat implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnInit() {
 
-    this.userId = localStorage.getItem('userId');
-    this.userName = localStorage.getItem('userName');
+    this.userId = sessionStorage.getItem('userId');
+    this.userName = sessionStorage.getItem('userName');
     this.getConversations()
 
 
@@ -163,11 +163,11 @@ export class Chat implements OnInit, OnDestroy, AfterViewInit {
 
 
   logout() {
-    const id = localStorage.getItem('userId');
+    const id = sessionStorage.getItem('userId');
 
      this.isLoaderVisible = true;
     if (!id) {
-      localStorage.removeItem('token');
+      sessionStorage.removeItem('token');
       this.router.navigate(['/login']);
       return;
     }
@@ -176,9 +176,9 @@ export class Chat implements OnInit, OnDestroy, AfterViewInit {
       (response: any) => {
         this.isLoaderVisible = false
         this.router.navigate(['/login']);
-        localStorage.removeItem('token');
-        localStorage.removeItem('userId');
-        localStorage.removeItem('userName');
+        sessionStorage.removeItem('token');
+        sessionStorage.removeItem('userId');
+        sessionStorage.removeItem('userName');
       },
       (error: any) => {
           this.isLoaderVisible = false

@@ -37,10 +37,10 @@ export class Login implements OnInit {
     this.common.login(this.loginForm.value).subscribe(
       (response: any) => {
         console.log('Login successful:', response);
-        localStorage.setItem('token', response.token);
-        localStorage.setItem('userName', response.user.name);
+        sessionStorage.setItem('token', response.token);
+        sessionStorage.setItem('userName', response.user.name);
 
-        localStorage.setItem('userId', response.user.id);
+        sessionStorage.setItem('userId', response.user.id);
         this.router.navigate(['/chat']);
         this.isLoaderVisible = false
       },

@@ -90,7 +90,7 @@ section {
     }
 
     .messages {
-        height: 80vh;
+        height: 80dvh;
         width: 91%;
         margin: auto;
         overflow-y: auto;
