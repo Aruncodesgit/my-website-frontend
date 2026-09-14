@@ -144,6 +144,11 @@ onDocumentClick(event: MouseEvent) {
   this.isMessageFocused = false;
 }
 
+focusMessage(event: MouseEvent) {
+  event.stopPropagation();
+  this.isMessageFocused = true;
+}
+
   sendMessage() {
     this.common.sendMessage({ conversationId: this.conversationId, receiverId: this.receiverId, text: this.text }).subscribe(
       (response: any) => {
