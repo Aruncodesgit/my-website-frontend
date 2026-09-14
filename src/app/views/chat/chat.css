@@ -214,9 +214,8 @@ section {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        width: 89%;
-        margin: auto;
-        position: absolute;
+        width: 90%;
+        margin: auto; 
         bottom: 12px;
         left: 0;
         right: 0;
@@ -239,12 +238,12 @@ section {
             padding: 9px 16px;
             border-radius: 8px;
             border: none;
-            background: linear-gradient(135deg, var(--accent-color),
-                    color-mix(in srgb, var(--accent-color) 70%, #f06cae));
+                background: linear-gradient(135deg, #00c722, 
+color-mix(in srgb, #11bd29 70%, #adefbd));
             color: var(--contrast-color);
             font-weight: 600;
             font-size: 22px;
-            box-shadow: 0 8px 20px color-mix(in srgb, var(--accent-color) 30%, transparent);
+            box-shadow: 0 8px 20px color-mix(in srgb, var(#00c722) 30%, transparent);
             transition: all 0.3s ease;
         }
     }
