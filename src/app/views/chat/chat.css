@@ -1,275 +1,366 @@
-
 section {
-    height: 100dvh;
-    overflow: hidden;
-
-    header {
-
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 60px;
-        z-index: 9999;
-        color: #fff;
-        ul {
-            list-style: none;
-            padding: 0px;
-            margin-bottom: 0;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-
-            li:first-child {
-                padding: 14px 14px;
-                height: 54px;
-                background-color: #093056;
-                width: 69%;
-                border-top-right-radius: 72px;
-            }
-
-            li.increase {
-                width: 78%;
-            }
-
-            li:last-child {
-                position: absolute;
-                right: 16px;
-            }
-
-            li {
-                display: flex;
-                align-items: center;
-
-                .profile {
-                    width: 35px;
-                    height: 35px;
-                    border: 1px solid #ccc;
-                    border-radius: 100%;
-                    margin-right: 10px;
-                    text-align: center;
-
-                    i {
-                        position: relative;
-                        top: 3px;
-                    }
-                }
-
-                p {
-                    margin-bottom: 0;
-                    font-size: 14px;
-                    position: relative;
-                    top: -10px;
-
-                }
-
-                .status {
-                    font-size: 10px;
-                    position: absolute;
-                    margin-top: -8px;
-                    background-color: #0ec53f;
-                    padding: 0px 6px;
-                    border-radius: 17px;
-                }
-
-                .lastsceen {
-                    font-size: 12px;
-                    position: absolute;
-                    margin-top: -11px;
-                    opacity: 0.7;
-                }
-            }
-
-            button {
-                background-color: #ffffff;
-                border: 0;
-                color: #093056;
-                padding: 4px 8px;
-                border-radius: 4px;
-                margin-left: 10px;
-
-                i {
-                    font-weight: bold;
-                }
-            }
-        }
-    }
-
-    .messages {
-        position: absolute;
-        top: 60px;
-        bottom: 65px;
-            left: 14px;
-    right: 14px;
-        overflow-y: auto;
-
-        .sent {
-
-            color: #fff;
-            width: 100%;
-            position: relative;
-
-            margin: 12px 0px;
-            display: flex;
-            justify-content: end;
-
-            span {
-                background-color: #1ba6bc;
-                padding: 5px 10px;
-                border-radius: 7px;
-                display: grid;
-                width: fit-content;
-                text-align: left;
-                word-break: break-word;
-
-                b {
-                    font-size: 10px;
-                    text-align: right;
-                    display: flex;
-                    align-items: center;
-                    font-weight: normal;
-                    justify-content: end;
-
-                    .bi-check2-all {
-                        font-size: 12px;
-                        color: #0a1020;
-                    }
-
-                    p {
-                        margin-bottom: 0;
-                        margin-left: 5px;
-                    }
-                }
-            }
-        }
-
-        .received {
-
-            color: #fff;
-            width: 100%;
-            position: relative;
-
-            margin: 12px 0px;
-            display: flex;
-            justify-content: start;
-
-            span {
-                background-color: #303747;
-                padding: 5px 10px;
-                border-radius: 7px;
-                display: grid;
-                width: fit-content;
-                text-align: left;
-                word-break: break-word;
-
-                b {
-                    font-size: 10px;
-                    text-align: left;
-                    display: flex;
-                    font-weight: normal;
-                    align-items: center;
-                    justify-content: end;
-
-                    p {
-                        margin-bottom: 0;
-                        margin-left: 5px;
-                    }
-                }
-            }
-        }
-
-        .drpDown.active {
-            display: block;
-        }
-
-        .drpDown {
-            display: none;
-            top: 34px;
-            background-color: #000000;
-            position: absolute;
-            width: auto;
-            border-radius: 5px;
-            z-index: 1;
-
-            ul {
-                list-style: none;
-                display: flex;
-                align-items: center;
-                justify-content: space-around;
-                margin-bottom: 0;
-                padding: 5px 6px;
-
-                li:first-child {
-                    border-right: 1px solid #5c5c5c;
-
-                }
-
-                li {
-                    padding: 0px 10px;
-                    cursor: pointer;
-
-                    i {
-                        font-size: 14px;
-                    }
-                }
-            }
-        }
-    }
-
-    .text {
-        position: fixed;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        height: 65px;
-        z-index: 9999;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        width: 90%;
-        margin: auto;
-        bottom: 12px;
-        left: 0;
-        right: 0;
-
-        textarea {
-            height: 52px;
-            padding: 12px 18px;
-            border-radius: 10px;
-            border: 1px solid #9c9c9c;
-            background: var(--background-color);
-            color: var(--default-color);
-            font-size: 16px;
-            box-shadow: none;
-            transition: all 0.3s ease;
-            width: 78%;
-        }
-
-        button {
-            margin-top: 0;
-            padding: 9px 16px;
-            border-radius: 8px;
-            border: none;
-            background: linear-gradient(135deg, #00c722,
-                    color-mix(in srgb, #11bd29 70%, #adefbd));
-            color: var(--contrast-color);
-            font-weight: 600;
-            font-size: 22px;
-            box-shadow: 0 8px 20px color-mix(in srgb, var(#00c722) 30%, transparent);
-            transition: all 0.3s ease;
-        }
-    }
-
+  height: 100dvh;
+  width: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+          padding: 0px 0px;
+          background-image: linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.5)), 
+          url(../../../assets/images/chat_bg.jpg);
+          background-size: 60%;
 }
 
+section .row {
+  height: 100%;
+  margin: 0;
+}
+
+section .col-md-12 {
+  height: 100%;
+  padding: 0;
+  position: relative;
+}
+
+
+/* =========================
+   HEADER
+========================= */
+
+section header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  z-index: 9999;
+  color: #fff;
+}
+
+section header ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+section header ul li:first-child {
+  padding: 14px 14px;
+  height: 54px;
+  background-color: #093056;
+  width: 69%;
+  border-top-right-radius: 72px;
+}
+
+section header ul li.increase {
+  width: 78%;
+}
+
+section header ul li:last-child {
+  position: absolute;
+  right: 16px;
+}
+
+section header ul li {
+  display: flex;
+  align-items: center;
+}
+
+section header .profile {
+  width: 35px;
+  height: 35px;
+  border: 1px solid #ccc;
+  border-radius: 100%;
+  margin-right: 10px;
+  text-align: center;
+}
+
+section header .profile i {
+  position: relative;
+  top: 3px;
+}
+
+section header p {
+  margin-bottom: 0;
+  font-size: 14px;
+  position: relative;
+  top: -10px;
+}
+
+section header .status {
+  font-size: 10px;
+  position: absolute;
+  margin-top: -8px;
+  background-color: #0ec53f;
+  padding: 0 6px;
+  border-radius: 17px;
+}
+
+section header .lastsceen {
+  font-size: 12px;
+  position: absolute;
+  margin-top: -11px;
+  opacity: 0.7;
+}
+
+section header button {
+  background-color: #fff;
+  border: 0;
+  color: #093056;
+  padding: 4px 8px;
+  border-radius: 4px;
+  margin-left: 10px;
+}
+
+section header button i {
+  font-weight: bold;
+}
+
+
+/* =========================
+   MESSAGES
+========================= */
+
+section .messages {
+  position: absolute;
+  top: 60px;
+  bottom: 77px;
+  left: 14px;
+  right: 14px;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+
+/* SENT MESSAGE */
+
+section .messages .sent {
+  color: #fff;
+  width: 100%;
+  position: relative;
+  margin: 12px 0;
+  display: flex;
+  justify-content: flex-end;
+}
+
+section .messages .sent span {
+  background-color: #1ba6bc;
+  padding: 2px 10px;
+  border-radius: 7px 7px 0px 7px;
+  display: grid;
+  width: fit-content;
+  text-align: left;
+  word-break: break-word;
+}
+
+section .messages .sent span b {
+  font-size: 10px;
+  text-align: right;
+  display: flex;
+  align-items: center;
+  font-weight: normal;
+  justify-content: flex-end;
+}
+
+section .messages .sent span b .bi-check2-all {
+  font-size: 12px;
+  color: #0a1020;
+}
+
+section .messages .sent span b p {
+  margin-bottom: 0;
+  margin-left: 5px;
+}
+
+
+/* RECEIVED MESSAGE */
+
+section .messages .received {
+  color: #fff;
+  width: 100%;
+  position: relative;
+  margin: 12px 0;
+  display: flex;
+  justify-content: flex-start;
+}
+
+section .messages .received span {
+  background-color: #303747;
+  padding: 2px 10px;
+  border-radius: 7px 7px 7px 0px;
+  display: grid;
+  width: fit-content;
+  text-align: left;
+  word-break: break-word;
+}
+
+section .messages .received span b {
+  font-size: 10px;
+  text-align: left;
+  display: flex;
+  font-weight: normal;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+section .messages .received span b p {
+  margin-bottom: 0;
+  margin-left: 5px;
+}
+
+
+/* MESSAGE DROPDOWN */
+
+section .messages .drpDown {
+  display: none;
+  top: 34px;
+  background-color: #000;
+  position: absolute;
+  width: auto;
+  border-radius: 5px;
+  z-index: 1;
+}
+
+section .messages .drpDown.active {
+  display: block;
+}
+
+section .messages .drpDown ul {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  margin-bottom: 0;
+  padding: 5px 6px;
+}
+
+section .messages .drpDown ul li:first-child {
+  border-right: 1px solid #5c5c5c;
+}
+
+section .messages .drpDown ul li {
+  padding: 0 10px;
+  cursor: pointer;
+}
+
+section .messages .drpDown ul li i {
+  font-size: 14px;
+}
+
+
+/* =========================
+   MESSAGE INPUT
+========================= */
+
+section .text {
+  position: absolute;
+  left: 5%;
+  right: 5%;
+  bottom: 12px;
+
+  width: 90%;
+  height: 65px;
+  margin: 0;
+
+  z-index: 9999;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+section .text textarea {
+  height: 52px;
+  padding: 12px 18px;
+  border-radius: 10px;
+  border: 1px solid #9c9c9c;
+  background: var(--background-color);
+  color: var(--default-color);
+  font-size: 16px;
+  box-shadow: none;
+  transition: all 0.3s ease;
+  width: 78%;
+
+  resize: none;
+  outline: none;
+}
+
+section .text button {
+  margin-top: 0;
+  padding: 9px 16px;
+  border-radius: 8px;
+  border: none;
+
+  background: linear-gradient(
+    135deg,
+    #00c722,
+    color-mix(in srgb, #11bd29 70%, #adefbd)
+  );
+
+  color: var(--contrast-color);
+  font-weight: 600;
+  font-size: 22px;
+
+  box-shadow: 0 8px 20px
+    color-mix(in srgb, #00c722 30%, transparent);
+
+  transition: all 0.3s ease;
+}
+
+
+/* =========================
+   KEYBOARD OPEN
+========================= */
+
+section.keyboard-open {
+  overflow: hidden;
+}
+
+section.keyboard-open .messages {
+  overflow-y: auto;
+}
+
+
+/* =========================
+   PRELOADER
+========================= */
+
 #preloader {
-    background: rgba(0, 0, 0, .5) !important;
+  background: rgba(0, 0, 0, 0.5) !important;
 }
 
 #preloader.hide {
-    display: none;
+  display: none;
 }
 
 #preloader.block {
-    display: flex;
+  display: flex;
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 767px) {
+
+  section {
+    height: 100dvh;
+    min-height: 0;
+  }
+
+  section .messages {
+    top: 60px;
+    bottom: 77px;
+  }
+
+  section .text {
+    bottom: 12px;
+  }
 }
