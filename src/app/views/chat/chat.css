@@ -218,9 +218,9 @@ section .messages .sent span {
 
   background-color: #1ba6bc;
 
-  padding: 5px 10px;
+  padding: 2px 10px;
 
-  border-radius: 7px;
+  border-radius: 7px 7px 0px 7px;
 
   display: grid;
 
@@ -277,9 +277,9 @@ section .messages .received span {
 
   background-color: #303747;
 
-  padding: 5px 10px;
+  padding: 2px 10px;
 
-  border-radius: 7px;
+  border-radius: 7px 7px 7px 0px;
 
   display: grid;
 
