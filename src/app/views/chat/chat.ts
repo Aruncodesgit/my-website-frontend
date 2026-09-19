@@ -63,12 +63,20 @@ export class Chat implements OnInit, OnDestroy {
 
         this.startGettingOnlinePolling();
         this.startMessagePolling();
-        this.startReadMessagePolling();
+        //this.startReadMessagePolling();
+        this.markMessagesAsRead();
       },
       (error: any) => {
         console.error('Failed to fetch conversations:', error);
       }
-    );
+    ); 
+  }
+
+
+  markMessagesAsRead() {
+    this.common.readMessage(this.conversationId).subscribe(res => {
+
+    })
   }
 
   startGettingOnlinePolling() {
@@ -105,7 +113,15 @@ export class Chat implements OnInit, OnDestroy {
         next: (response: any) => {
 
           this.messageData = response.data;
+          const hasUnreadMessage = this.messageData.some(
+          (msg: any) =>
+            msg.receiverId === this.userId &&
+            msg.isRead === false
+        );
 
+        if (hasUnreadMessage) {
+          this.markMessagesAsRead();
+        }
           this.cdr.detectChanges();
 
         },
@@ -116,23 +132,23 @@ export class Chat implements OnInit, OnDestroy {
   }
 
 
-  startReadMessagePolling() {
+  // startReadMessagePolling() {
 
-    this.readSubscription = timer(0, 1000)
-      .pipe(
-        switchMap(() =>
-          this.common.readMessage(this.conversationId)
-        )
-      )
-      .subscribe({
-        next: () => {
+  //   this.readSubscription = timer(0, 1000)
+  //     .pipe(
+  //       switchMap(() =>
+  //         this.common.readMessage(this.conversationId)
+  //       )
+  //     )
+  //     .subscribe({
+  //       next: () => {
 
-        },
-        error: (error) => {
+  //       },
+  //       error: (error) => {
 
-        }
-      });
-  }
+  //       }
+  //     });
+  // }
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent) {
