@@ -362,7 +362,17 @@ export class Chat implements OnInit, OnDestroy {
     });
   }
 
-
+  testBrowserClose() {
+    
+    const userId = sessionStorage.getItem('userId');
+    navigator.sendBeacon(
+      `${environment.apiBaseUrl}/logout/browser-close`,
+      userId
+    );
+    sessionStorage.removeItem('token');
+    sessionStorage.removeItem('userId');
+    sessionStorage.removeItem('userName');
+  }
 
   @HostListener('window:pagehide')
   onPageHide() {
