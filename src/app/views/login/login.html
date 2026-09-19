@@ -24,10 +24,13 @@
                     </div>
                     <form class="php-email-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
                         <div class="row gy-3">
-                            <div class="col-md-12"><input type="text" formControlName="email" name="name"
-                                    class="form-control" placeholder="Email"></div>
-                            <div class="col-md-12"><input type="text" formControlName="password" name="phone"
-                                    class="form-control" placeholder="Password"></div>
+                            <div class="col-md-12 email">
+                                <input type="text" formControlName="email" name="name"
+                                    class="form-control" placeholder="Email" [(ngModel)]="email">
+                                    <span (click)="fill()">fill</span>
+                                </div>
+                            <div class="col-md-12"><input type="text" formControlName="password" #passwordInput name="phone"
+                                    class="form-control pswrd" placeholder="Password"></div>
 
                             <div class="col-12 text-center">
                                 <!-- <div class="sent-message" [class.active]="successMessage">Your message has been sent. Thank

@@ -1,12 +1,12 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Common } from '../../services/common';
 import { CommonModule } from '@angular/common';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { Router } from '@angular/router';
 
 @Component({
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule],
   selector: 'app-login',
   styleUrl: './login.css',
   templateUrl: './login.html',
@@ -16,6 +16,8 @@ export class Login implements OnInit {
   isMobile: boolean = false;
   isLoaderVisible: boolean = false;
   errorMessage: any;
+  email:any;
+  @ViewChild('passwordInput') passwordInput!: ElementRef<HTMLInputElement>;
   constructor(private cdr: ChangeDetectorRef, private breakpointObserver: BreakpointObserver, private fb: FormBuilder, private common: Common,
     private router: Router
   ) {
@@ -32,6 +34,13 @@ export class Login implements OnInit {
       password: ['', [Validators.required]]
     });
 
+  }
+
+  fill() {
+    this.email += '@gmail.com';
+     setTimeout(() => {
+    this.passwordInput.nativeElement.focus();
+  });
   }
   onSubmit() {
     this.isLoaderVisible = true; 

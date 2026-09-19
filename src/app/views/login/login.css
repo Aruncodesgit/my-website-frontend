@@ -47,3 +47,23 @@ section {
     color: #ff7e7e;
     border: 1px solid #ff3b3b;
 }
+
+.pswrd {
+    -webkit-text-security: disc;
+  text-security: disc;
+}
+
+.email {
+    position: relative;
+}
+.email  span {
+    position: absolute;
+        background-color: #093056;
+    top: 16px;
+    right: 24px;
+    padding: 1px 9px;
+    border-radius: 3px;
+    letter-spacing: 1px;
+    text-transform: capitalize;
+    font-size: 13px;
+}
