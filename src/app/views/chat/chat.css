@@ -280,7 +280,13 @@ section .messages .received {
 
   color: #fff;
 }
-
+section .received h6 {
+  position: absolute;
+    bottom: -21px;
+    font-size: 9px;
+    color: #9c9c9c;
+    letter-spacing: 0.7px;
+}
 section .messages .received span {
   max-width: 80%;
 
@@ -327,7 +333,7 @@ section .messages .drpDown {
 
   position: absolute;
 
-  top: -36px;
+  top: 6px;
 
   width: auto;
 
@@ -335,7 +341,7 @@ section .messages .drpDown {
 
   border-radius: 50px;
 
-  z-index: 10;
+  z-index: 111;
 }
 
 section .messages .drpDown.active {

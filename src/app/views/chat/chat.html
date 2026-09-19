@@ -34,7 +34,7 @@
                             <li (click)="deleteMessageById(msg._id)"><i class="bi bi-trash"></i> Delete</li>
                         </ul>
                     </div> 
-                    <span (click)="clickMessage(msg._id, $event)"> {{msg.text}}
+                    <span (click)="msg.senderId == userId &&  clickMessage(msg._id, $event)"> {{msg.text}}
                         <b>{{msg.createdAt | date:'h:mm a'}}
                             <p *ngIf="msg.isRead == false && msg.senderId == userId"><i class="bi bi-check2"></i></p>
                             <p *ngIf="msg.isRead == true && msg.senderId == userId"><i class="bi bi-check2-all"></i></p>
