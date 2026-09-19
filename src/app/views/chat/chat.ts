@@ -165,9 +165,10 @@ export class Chat implements OnInit, OnDestroy {
           this.isMessageFocused = false;
           console.log('Message sent successfully:', response);
           this.text = '';
-          setTimeout(() => {
-            this.messageInput.nativeElement.focus();
-            this.isMessageFocused = true;
+           setTimeout(() => {
+          this.messageInput.nativeElement.style.height = '52px'; 
+          //   this.messageInput.nativeElement.focus();
+          //   this.isMessageFocused = true;
           });
           this.cdr.detectChanges()
         },
@@ -207,6 +208,28 @@ export class Chat implements OnInit, OnDestroy {
 
   }
 
+   autoResize(event: Event) {
+  const textarea = event.target as HTMLTextAreaElement;
+
+  // Keep normal height until 50 characters 
+  if (textarea.value.length <= 50) { 
+     textarea.style.height = '52px';
+    textarea.style.overflowY = 'hidden';
+    return;
+  }
+  
+  // Start increasing after 50 characters
+  textarea.style.height = 'auto';
+  textarea.style.height = textarea.scrollHeight + 'px';
+
+  // Maximum height
+  if (textarea.scrollHeight > 120) {
+    textarea.style.height = '120px';
+    textarea.style.overflowY = 'auto';
+  } else {
+    textarea.style.overflowY = 'hidden';
+  }
+}
 
   formatLastSeen(date: string): string {
     if (!date) {
