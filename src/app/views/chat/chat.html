@@ -49,7 +49,7 @@
             <div class="text" (click)="focusMessage($event)">
                 <textarea type="text" placeholder="Type a message..." #messageInput (focus)="isMessageFocused = true"
                     (blur)="isMessageFocused = false" (input)="autoResize($event)" [(ngModel)]="text"></textarea>
-                <button (click)="testBrowserClose()"><i class="bi"  [ngClass]="editingMessageId ? 'bi-check-lg' : 'bi-send'" ></i></button>
+                <button (click)="sendMessage()"><i class="bi"  [ngClass]="editingMessageId ? 'bi-check-lg' : 'bi-send'" ></i></button>
             </div>
         </div>
     </div>
