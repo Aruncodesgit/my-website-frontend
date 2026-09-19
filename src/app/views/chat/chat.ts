@@ -145,25 +145,7 @@ export class Chat implements OnInit, OnDestroy {
         }
       });
   }
-
-
-  // startReadMessagePolling() {
-
-  //   this.readSubscription = timer(0, 1000)
-  //     .pipe(
-  //       switchMap(() =>
-  //         this.common.readMessage(this.conversationId)
-  //       )
-  //     )
-  //     .subscribe({
-  //       next: () => {
-
-  //       },
-  //       error: (error) => {
-
-  //       }
-  //     });
-  // }
+ 
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent) {
@@ -374,22 +356,7 @@ export class Chat implements OnInit, OnDestroy {
       this.showCopyId = null;
     });
   }
-
-
-
-  // @HostListener('window:pagehide')
-  // onPageHide() {
-
-  //   const userId = sessionStorage.getItem('userId');
-  //   navigator.sendBeacon(
-  //     `${environment.apiProdUrl}/logout/browser-close`,
-  //     userId
-  //   );
-  //   sessionStorage.removeItem('token');
-  //   sessionStorage.removeItem('userId');
-  //   sessionStorage.removeItem('userName');
-  // }
-
+ 
   clearStorage() {
     sessionStorage.removeItem('token');
     sessionStorage.removeItem('userId');

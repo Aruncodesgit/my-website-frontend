@@ -79,9 +79,9 @@ export class Common {
         }
       }
     );
-  } 
+  }
 
-   deleteAllMessages() {
+  deleteAllMessages() {
     return this.http.delete(
       environment.apiProdUrl + '/message',
       {
@@ -92,30 +92,30 @@ export class Common {
     );
   }
 
-    deleteById(id: string) {
-  return this.http.delete(
-        `${environment.apiProdUrl}/message/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${this.getToken()}`
-          }
+  deleteById(id: string) {
+    return this.http.delete(
+      `${environment.apiProdUrl}/message/${id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${this.getToken()}`
         }
-      );
-    }
+      }
+    );
+  }
 
-     editMessage(id: string, text: string) {
-  return this.http.put(
-        `${environment.apiProdUrl}/message/${id}`,
-         {
-      text: text
-    },
-        {
-          headers: {
-            Authorization: `Bearer ${this.getToken()}`
-          }
+  editMessage(id: string, text: string) {
+    return this.http.put(
+      `${environment.apiProdUrl}/message/${id}`,
+      {
+        text: text
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${this.getToken()}`
         }
-      );
-    }
+      }
+    );
+  }
 
   logout(id: string) {
 
@@ -132,15 +132,15 @@ export class Common {
 
   heartbeat() {
     return this.http.post(
-        `${environment.apiProdUrl}/logout/heartbeat`,
-        {},
-        {
-            headers: {
-                Authorization: `Bearer ${this.getToken()}`
-            }
+      `${environment.apiProdUrl}/logout/heartbeat`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${this.getToken()}`
         }
+      }
     );
-}
+  }
 
   getToken() {
     return sessionStorage.getItem('token');
