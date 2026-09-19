@@ -5,7 +5,7 @@ import { Common } from '../../services/common';
 import { Router } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { timer, Subscription } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { exhaustMap, switchMap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 @Component({
   imports: [CommonModule, ReactiveFormsModule, FormsModule],
@@ -55,7 +55,7 @@ export class Chat implements OnInit, OnDestroy {
   startHeartbeat() {
     this.heartbeatSubscription = timer(0, 10000)
       .pipe(
-        switchMap(() => this.common.heartbeat())
+        exhaustMap(() => this.common.heartbeat())
       )
       .subscribe({
         next: (response: any) => {
@@ -98,7 +98,7 @@ export class Chat implements OnInit, OnDestroy {
 
     this.onlineSubscription = timer(0, 1000)
       .pipe(
-        switchMap(() => this.common.getUserById(this.receiverId))
+        exhaustMap(() => this.common.getUserById(this.receiverId))
       )
       .subscribe({
         next: (response: any) => {
@@ -122,7 +122,7 @@ export class Chat implements OnInit, OnDestroy {
 
     this.messageSubscription = timer(0, 1000)
       .pipe(
-        switchMap(() => this.common.getMessages())
+        exhaustMap(() => this.common.getMessages())
       )
       .subscribe({
         next: (response: any) => {
@@ -366,8 +366,7 @@ export class Chat implements OnInit, OnDestroy {
     this.messageSubscription?.unsubscribe();
     this.readSubscription?.unsubscribe();
     this.onlineSubscription?.unsubscribe();
-    this.heartbeatSubscription?.unsubscribe();
-    this.clearStorage()
+    this.heartbeatSubscription?.unsubscribe(); 
     this.showCopyId = ''
   }
 }
