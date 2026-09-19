@@ -34,6 +34,7 @@ export class Chat implements OnInit, OnDestroy {
   isMessageFocused = false;
   editingMessageId: any
   heartbeatSubscription!: Subscription;
+  accessChat: boolean = false
   constructor(private breakpointObserver: BreakpointObserver, private common: Common, private router: Router, private cdr: ChangeDetectorRef) {
     this.breakpointObserver
       .observe(['(max-width: 767px)'])
@@ -50,6 +51,10 @@ export class Chat implements OnInit, OnDestroy {
     this.getConversations()
     this.startHeartbeat();
 
+    this.accessChat = [
+      '6aa79fd3b0d5cd1f5fa84742',
+      '6aa79fedb0d5cd1f5fa84744'
+    ].includes(this.userId);
   }
 
   startHeartbeat() {
@@ -145,7 +150,7 @@ export class Chat implements OnInit, OnDestroy {
         }
       });
   }
- 
+
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent) {
@@ -356,7 +361,7 @@ export class Chat implements OnInit, OnDestroy {
       this.showCopyId = null;
     });
   }
- 
+
   clearStorage() {
     sessionStorage.removeItem('token');
     sessionStorage.removeItem('userId');
@@ -366,7 +371,7 @@ export class Chat implements OnInit, OnDestroy {
     this.messageSubscription?.unsubscribe();
     this.readSubscription?.unsubscribe();
     this.onlineSubscription?.unsubscribe();
-    this.heartbeatSubscription?.unsubscribe(); 
+    this.heartbeatSubscription?.unsubscribe();
     this.showCopyId = ''
   }
 }

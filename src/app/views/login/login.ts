@@ -60,7 +60,11 @@ export class Login implements OnInit {
         this.loginForm.reset()
         this.cdr.detectChanges()
         console.log(this.errorMessage); 
+      
       }
     );
+      setTimeout(() => {
+          this.errorMessage = ''
+        }, 2000);
   }
 }
