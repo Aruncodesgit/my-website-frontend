@@ -48,24 +48,24 @@ export class Chat implements OnInit, OnDestroy {
     this.userId = sessionStorage.getItem('userId');
     this.userName = sessionStorage.getItem('userName');
     this.getConversations()
-this.startHeartbeat();
+    this.startHeartbeat();
 
   }
 
   startHeartbeat() {
     this.heartbeatSubscription = timer(0, 15000)
-        .pipe(
-            switchMap(() => this.common.heartbeat())
-        )
-        .subscribe({
-            next: (response: any) => {
-                console.log('Heartbeat success');
-            },
-            error: (error: any) => {
-                console.error('Heartbeat failed:', error);
-            }
-        });
-}
+      .pipe(
+        switchMap(() => this.common.heartbeat())
+      )
+      .subscribe({
+        next: (response: any) => {
+          console.log('Heartbeat success');
+        },
+        error: (error: any) => {
+          console.error('Heartbeat failed:', error);
+        }
+      });
+  }
 
   getConversations() {
 
@@ -390,10 +390,10 @@ this.startHeartbeat();
   //   sessionStorage.removeItem('userName');
   // }
 
-  clearStorage(){
+  clearStorage() {
     sessionStorage.removeItem('token');
-        sessionStorage.removeItem('userId');
-        sessionStorage.removeItem('userName');
+    sessionStorage.removeItem('userId');
+    sessionStorage.removeItem('userName');
   }
   ngOnDestroy() {
     this.messageSubscription?.unsubscribe();

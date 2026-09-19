@@ -132,7 +132,7 @@ export class Common {
 
   heartbeat() {
     return this.http.post(
-        `${environment.apiBaseUrl}/logout/heartbeat`,
+        `${environment.apiProdUrl}/logout/heartbeat`,
         {},
         {
             headers: {
