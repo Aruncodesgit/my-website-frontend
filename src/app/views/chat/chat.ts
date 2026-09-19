@@ -53,7 +53,7 @@ export class Chat implements OnInit, OnDestroy {
   }
 
   startHeartbeat() {
-    this.heartbeatSubscription = timer(0, 15000)
+    this.heartbeatSubscription = timer(0, 10000)
       .pipe(
         switchMap(() => this.common.heartbeat())
       )
