@@ -33,6 +33,7 @@ export class Chat implements OnInit, OnDestroy {
   isLoaderVisible: boolean = false;
   isMessageFocused = false;
   editingMessageId: any
+  heartbeatSubscription!: Subscription;
   constructor(private breakpointObserver: BreakpointObserver, private common: Common, private router: Router, private cdr: ChangeDetectorRef) {
     this.breakpointObserver
       .observe(['(max-width: 767px)'])
@@ -47,10 +48,24 @@ export class Chat implements OnInit, OnDestroy {
     this.userId = sessionStorage.getItem('userId');
     this.userName = sessionStorage.getItem('userName');
     this.getConversations()
-
+this.startHeartbeat();
 
   }
 
+  startHeartbeat() {
+    this.heartbeatSubscription = timer(0, 15000)
+        .pipe(
+            switchMap(() => this.common.heartbeat())
+        )
+        .subscribe({
+            next: (response: any) => {
+                console.log('Heartbeat success');
+            },
+            error: (error: any) => {
+                console.error('Heartbeat failed:', error);
+            }
+        });
+}
 
   getConversations() {
 
@@ -212,9 +227,7 @@ export class Chat implements OnInit, OnDestroy {
       (response: any) => {
         this.isLoaderVisible = false
         this.router.navigate(['/login']);
-        sessionStorage.removeItem('token');
-        sessionStorage.removeItem('userId');
-        sessionStorage.removeItem('userName');
+        this.clearStorage()
       },
       (error: any) => {
         this.isLoaderVisible = false
@@ -364,23 +377,30 @@ export class Chat implements OnInit, OnDestroy {
 
 
 
-  @HostListener('window:pagehide')
-  onPageHide() {
+  // @HostListener('window:pagehide')
+  // onPageHide() {
 
-    const userId = sessionStorage.getItem('userId');
-    navigator.sendBeacon(
-      `${environment.apiProdUrl}/logout/browser-close`,
-      userId
-    );
+  //   const userId = sessionStorage.getItem('userId');
+  //   navigator.sendBeacon(
+  //     `${environment.apiProdUrl}/logout/browser-close`,
+  //     userId
+  //   );
+  //   sessionStorage.removeItem('token');
+  //   sessionStorage.removeItem('userId');
+  //   sessionStorage.removeItem('userName');
+  // }
+
+  clearStorage(){
     sessionStorage.removeItem('token');
-    sessionStorage.removeItem('userId');
-    sessionStorage.removeItem('userName');
+        sessionStorage.removeItem('userId');
+        sessionStorage.removeItem('userName');
   }
-
   ngOnDestroy() {
     this.messageSubscription?.unsubscribe();
     this.readSubscription?.unsubscribe();
     this.onlineSubscription?.unsubscribe();
+    this.heartbeatSubscription?.unsubscribe();
+    this.clearStorage()
     this.showCopyId = ''
   }
 }

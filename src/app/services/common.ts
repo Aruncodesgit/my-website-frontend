@@ -130,7 +130,17 @@ export class Common {
     );
   }
 
-  
+  heartbeat() {
+    return this.http.post(
+        `${environment.apiBaseUrl}/logout/heartbeat`,
+        {},
+        {
+            headers: {
+                Authorization: `Bearer ${this.getToken()}`
+            }
+        }
+    );
+}
 
   getToken() {
     return sessionStorage.getItem('token');
