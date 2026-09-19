@@ -69,7 +69,7 @@ export class Chat implements OnInit, OnDestroy {
       (error: any) => {
         console.error('Failed to fetch conversations:', error);
       }
-    ); 
+    );
   }
 
 
@@ -114,14 +114,14 @@ export class Chat implements OnInit, OnDestroy {
 
           this.messageData = response.data;
           const hasUnreadMessage = this.messageData.some(
-          (msg: any) =>
-            msg.receiverId === this.userId &&
-            msg.isRead === false
-        );
+            (msg: any) =>
+              msg.receiverId === this.userId &&
+              msg.isRead === false
+          );
 
-        if (hasUnreadMessage) {
-          this.markMessagesAsRead();
-        }
+          if (hasUnreadMessage) {
+            this.markMessagesAsRead();
+          }
           this.cdr.detectChanges();
 
         },
@@ -181,10 +181,10 @@ export class Chat implements OnInit, OnDestroy {
           this.isMessageFocused = false;
           console.log('Message sent successfully:', response);
           this.text = '';
-           setTimeout(() => {
-          this.messageInput.nativeElement.style.height = '52px'; 
-          //   this.messageInput.nativeElement.focus();
-          //   this.isMessageFocused = true;
+          setTimeout(() => {
+            this.messageInput.nativeElement.style.height = '52px';
+            //   this.messageInput.nativeElement.focus();
+            //   this.isMessageFocused = true;
           });
           this.cdr.detectChanges()
         },
@@ -224,28 +224,28 @@ export class Chat implements OnInit, OnDestroy {
 
   }
 
-   autoResize(event: Event) {
-  const textarea = event.target as HTMLTextAreaElement;
+  autoResize(event: Event) {
+    const textarea = event.target as HTMLTextAreaElement;
 
-  // Keep normal height until 50 characters 
-  if (textarea.value.length <= 50) { 
-     textarea.style.height = '52px';
-    textarea.style.overflowY = 'hidden';
-    return;
-  }
-  
-  // Start increasing after 50 characters
-  textarea.style.height = 'auto';
-  textarea.style.height = textarea.scrollHeight + 'px';
+    // Keep normal height until 50 characters 
+    if (textarea.value.length <= 50) {
+      textarea.style.height = '52px';
+      textarea.style.overflowY = 'hidden';
+      return;
+    }
 
-  // Maximum height
-  if (textarea.scrollHeight > 120) {
-    textarea.style.height = '120px';
-    textarea.style.overflowY = 'auto';
-  } else {
-    textarea.style.overflowY = 'hidden';
+    // Start increasing after 50 characters
+    textarea.style.height = 'auto';
+    textarea.style.height = textarea.scrollHeight + 'px';
+
+    // Maximum height
+    if (textarea.scrollHeight > 120) {
+      textarea.style.height = '120px';
+      textarea.style.overflowY = 'auto';
+    } else {
+      textarea.style.overflowY = 'hidden';
+    }
   }
-}
 
   formatLastSeen(date: string): string {
     if (!date) {
@@ -348,10 +348,10 @@ export class Chat implements OnInit, OnDestroy {
     this.text = text;
     this.showCopyId = null;
 
-  setTimeout(() => {
-    this.messageInput.nativeElement.focus();
-    this.isMessageFocused = true;
-  });
+    setTimeout(() => {
+      this.messageInput.nativeElement.focus();
+      this.isMessageFocused = true;
+    });
   }
 
   copyMessage(text: string, event: MouseEvent) {
@@ -362,20 +362,21 @@ export class Chat implements OnInit, OnDestroy {
     });
   }
 
-  @HostListener('window:pagehide', ['$event'])
-  onPageHide(event: PageTransitionEvent) {
-    const id = sessionStorage.getItem('userId');
 
-    if (id) {
-      this.logoutOnClose(id);
-    }
+
+  @HostListener('window:pagehide')
+  onPageHide() {
+
+    const userId = sessionStorage.getItem('userId');
+    navigator.sendBeacon(
+      `${environment.apiBaseUrl}/logout/browser-close`,
+      userId
+    );
+    sessionStorage.removeItem('token');
+    sessionStorage.removeItem('userId');
+    sessionStorage.removeItem('userName');
   }
 
-  logoutOnClose(id: string) {
-    const url = `${environment.apiProdUrl}/logout/${id}`;
-
-    navigator.sendBeacon(url);
-  }
   ngOnDestroy() {
     this.messageSubscription?.unsubscribe();
     this.readSubscription?.unsubscribe();
