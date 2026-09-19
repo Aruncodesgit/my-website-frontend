@@ -19,7 +19,9 @@
 
             <div class="row justify-content-center">
                 <div class="col-lg-12">
-
+                    <div class="error" *ngIf="errorMessage">
+                        {{errorMessage}}
+                    </div>
                     <form class="php-email-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
                         <div class="row gy-3">
                             <div class="col-md-12"><input type="text" formControlName="email" name="name"
@@ -43,6 +45,6 @@
     </section><!-- /Contact Section -->
 </ng-container>
 
-<div id="preloader" [ngClass]="isLoaderVisible ? 'block' : 'hide' ">
+<div id="preloader" [ngClass]="isLoaderVisible == true ? 'block' : 'hide' ">
     <div class="loader"></div>
   </div>

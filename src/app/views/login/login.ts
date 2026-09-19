@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Common } from '../../services/common';
 import { CommonModule } from '@angular/common';
@@ -15,7 +15,8 @@ export class Login implements OnInit {
   loginForm: any;
   isMobile: boolean = false;
   isLoaderVisible: boolean = false;
-  constructor(private breakpointObserver: BreakpointObserver, private fb: FormBuilder, private common: Common,
+  errorMessage: any;
+  constructor(private cdr: ChangeDetectorRef, private breakpointObserver: BreakpointObserver, private fb: FormBuilder, private common: Common,
     private router: Router
   ) {
     this.breakpointObserver
@@ -33,7 +34,7 @@ export class Login implements OnInit {
 
   }
   onSubmit() {
-    this.isLoaderVisible = true
+    this.isLoaderVisible = true; 
     this.common.login(this.loginForm.value).subscribe(
       (response: any) => {
         console.log('Login successful:', response);
@@ -41,14 +42,15 @@ export class Login implements OnInit {
         sessionStorage.setItem('userName', response.user.name);
 
         sessionStorage.setItem('userId', response.user.id);
-        this.router.navigate(['/chat']);
-        this.isLoaderVisible = false
+        this.router.navigate(['/chat']); 
+        this.isLoaderVisible = false;
       },
-      (error: any) => {
-        setTimeout(() => {
-           this.isLoaderVisible = false
-        }, 2000);
-        console.log('Login failed:', error);
+      (error: any) => { 
+        this.isLoaderVisible = false;
+        this.errorMessage = error.error.message;
+        this.loginForm.reset()
+        this.cdr.detectChanges()
+        console.log(this.errorMessage); 
       }
     );
   }

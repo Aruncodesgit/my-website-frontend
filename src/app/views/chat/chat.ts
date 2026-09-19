@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { timer, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
 @Component({
   imports: [CommonModule, ReactiveFormsModule, FormsModule],
   selector: 'app-chat',
@@ -29,8 +30,9 @@ export class Chat implements OnInit, OnDestroy {
   receiverisOnline: any;
   @ViewChild('messageInput') messageInput!: ElementRef;
   showCopyId: any = null;
-  isLoaderVisible:boolean = false;
+  isLoaderVisible: boolean = false;
   isMessageFocused = false;
+  editingMessageId: any
   constructor(private breakpointObserver: BreakpointObserver, private common: Common, private router: Router, private cdr: ChangeDetectorRef) {
     this.breakpointObserver
       .observe(['(max-width: 767px)'])
@@ -47,14 +49,13 @@ export class Chat implements OnInit, OnDestroy {
     this.getConversations()
 
 
-  } 
+  }
 
 
   getConversations() {
 
     this.common.getConversations().subscribe(
       (response: any) => {
-        console.log('Conversations fetched successfully:', response);
         this.conversationId = response.data[0]._id;
         var receiverID = response.data[0].participants
         receiverID = receiverID.filter((id: any) => id !== this.userId);
@@ -84,13 +85,12 @@ export class Chat implements OnInit, OnDestroy {
           this.receiverUserName = receiver.name;
           this.receiverLastSeen = receiver.lastSeen;
           this.receiverisOnline = receiver.isOnline;
-          console.log('Receiver online:', this.receiverisOnline);
 
           this.cdr.detectChanges();
 
         },
         error: (error) => {
-          console.error('Failed to fetch messages:', error);
+
         }
       });
   }
@@ -105,7 +105,7 @@ export class Chat implements OnInit, OnDestroy {
         next: (response: any) => {
 
           this.messageData = response.data;
-          
+
           this.cdr.detectChanges();
 
         },
@@ -127,44 +127,56 @@ export class Chat implements OnInit, OnDestroy {
       .subscribe({
         next: () => {
 
-          console.log(
-            'Messages marked as read:',
-            this.conversationId
-          );
-
         },
         error: (error) => {
-          console.error('Read message failed:', error);
+
         }
       });
   }
 
   @HostListener('document:click', ['$event'])
-onDocumentClick(event: MouseEvent) {
-  this.isMessageFocused = false;
-}
+  onDocumentClick(event: MouseEvent) {
+    this.isMessageFocused = false;
+  }
 
-focusMessage(event: MouseEvent) {
-  event.stopPropagation();
-  this.isMessageFocused = true;
-}
+  focusMessage(event: MouseEvent) {
+    event.stopPropagation();
+    this.isMessageFocused = true;
+  }
 
   sendMessage() {
-    this.common.sendMessage({ conversationId: this.conversationId, receiverId: this.receiverId, text: this.text }).subscribe(
-      (response: any) => {
-        this.isMessageFocused = false;
-        console.log('Message sent successfully:', response);
-        this.text = '';
-        setTimeout(() => {
-          this.messageInput.nativeElement.focus();
-          this.isMessageFocused = true;
-        });
-        this.cdr.detectChanges()
+
+    if (this.editingMessageId) {
+      this.common.editMessage(this.editingMessageId, this.text).subscribe(res => {
+        if (res) {
+          this.editingMessageId = null;
+          this.text = '';
+          this.isMessageFocused = false;
+          this.cdr.detectChanges();
+        }
       },
-      (error: any) => {
-        console.error('Failed to send message:', error);
-      }
-    );
+        (error: any) => {
+
+        })
+    }
+    else {
+      this.common.sendMessage({ conversationId: this.conversationId, receiverId: this.receiverId, text: this.text }).subscribe(
+        (response: any) => {
+          this.isMessageFocused = false;
+          console.log('Message sent successfully:', response);
+          this.text = '';
+          setTimeout(() => {
+            this.messageInput.nativeElement.focus();
+            this.isMessageFocused = true;
+          });
+          this.cdr.detectChanges()
+        },
+        (error: any) => {
+          console.error('Failed to send message:', error);
+        }
+      );
+    }
+
   }
 
 
@@ -172,7 +184,7 @@ focusMessage(event: MouseEvent) {
   logout() {
     const id = sessionStorage.getItem('userId');
 
-     this.isLoaderVisible = true;
+    this.isLoaderVisible = true;
     if (!id) {
       sessionStorage.removeItem('token');
       this.router.navigate(['/login']);
@@ -188,7 +200,7 @@ focusMessage(event: MouseEvent) {
         sessionStorage.removeItem('userName');
       },
       (error: any) => {
-          this.isLoaderVisible = false
+        this.isLoaderVisible = false
         console.error('Logout failed:', error);
       }
     );
@@ -202,6 +214,36 @@ focusMessage(event: MouseEvent) {
     }
 
     const d = new Date(date);
+    const now = new Date();
+
+    const today = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate()
+    );
+
+    const yesterday = new Date(today);
+    yesterday.setDate(today.getDate() - 1);
+
+    const dateOnly = new Date(
+      d.getFullYear(),
+      d.getMonth(),
+      d.getDate()
+    );
+
+    const time = d.toLocaleString('en-IN', {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true
+    });
+
+    if (dateOnly.getTime() === today.getTime()) {
+      return `Today, ${time}`;
+    }
+
+    if (dateOnly.getTime() === yesterday.getTime()) {
+      return `Yesterday, ${time}`;
+    }
 
     return d.toLocaleString('en-IN', {
       weekday: 'short',
@@ -212,51 +254,89 @@ focusMessage(event: MouseEvent) {
   }
 
   deleteAllMessages() {
-     this.isLoaderVisible = true;
+    this.isLoaderVisible = true;
     this.common.deleteAllMessages().subscribe(
       (response: any) => {
         setTimeout(() => {
-         this.isLoaderVisible = false;
-       }, 1000);
+          this.isLoaderVisible = false;
+        }, 1000);
         this.messageData = [];
         this.cdr.detectChanges();
       },
       (error: any) => {
         setTimeout(() => {
-         this.isLoaderVisible = false;
-       }, 1000);
+          this.isLoaderVisible = false;
+        }, 1000);
         console.error('Failed to delete all messages:', error);
       }
     );
   }
 
-  clickMessage(id: string) {
+  clickMessage(id: string, event: MouseEvent) {
+    event.stopPropagation();
+
     if (this.showCopyId === id) {
-      // Click the same message again → close
       this.showCopyId = null;
     } else {
-      // Click another message → show only that message
       this.showCopyId = id;
     }
   }
 
-  deleteMessageById(id: string) {   
+  closeDropDown() {
+    this.showCopyId = null;
+  }
+
+  deleteMessageById(id: string) {
     this.isLoaderVisible = true;
-    this.common.deleteById(id).subscribe(res => { 
-      if(res) {
-       setTimeout(() => {
-         this.isLoaderVisible = false;
-       }, 1000);
-      } 
+    this.common.deleteById(id).subscribe(res => {
+      if (res) {
+        setTimeout(() => {
+          this.isLoaderVisible = false;
+        }, 1000);
+      }
     },
       (error: any) => {
         setTimeout(() => {
-             this.isLoaderVisible = false;
+          this.isLoaderVisible = false;
         }, 1000);
       })
 
   }
 
+
+  editMessage(id: string, text: any) {
+    this.editingMessageId = id
+    this.text = text;
+    this.showCopyId = null;
+
+  setTimeout(() => {
+    this.messageInput.nativeElement.focus();
+    this.isMessageFocused = true;
+  });
+  }
+
+  copyMessage(text: string, event: MouseEvent) {
+    event.stopPropagation();
+
+    navigator.clipboard.writeText(text).then(() => {
+      this.showCopyId = null;
+    });
+  }
+
+  @HostListener('window:pagehide', ['$event'])
+  onPageHide(event: PageTransitionEvent) {
+    const id = sessionStorage.getItem('userId');
+
+    if (id) {
+      this.logoutOnClose(id);
+    }
+  }
+
+  logoutOnClose(id: string) {
+    const url = `${environment.apiProdUrl}/logout/${id}`;
+
+    navigator.sendBeacon(url);
+  }
   ngOnDestroy() {
     this.messageSubscription?.unsubscribe();
     this.readSubscription?.unsubscribe();

@@ -103,6 +103,20 @@ export class Common {
       );
     }
 
+     editMessage(id: string, text: string) {
+  return this.http.put(
+        `${environment.apiProdUrl}/message/${id}`,
+         {
+      text: text
+    },
+        {
+          headers: {
+            Authorization: `Bearer ${this.getToken()}`
+          }
+        }
+      );
+    }
+
   logout(id: string) {
 
     return this.http.post(
@@ -115,6 +129,8 @@ export class Common {
       }
     );
   }
+
+  
 
   getToken() {
     return sessionStorage.getItem('token');

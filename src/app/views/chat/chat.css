@@ -195,24 +195,33 @@ section .messages {
   padding-bottom: 10px;
 }
 
+section .messages .sent.blur:not(.notBlur),
+section .messages .received.blur:not(.notBlur) {
+  filter: blur(5px);
+  opacity: 0.5;
+}
 
 /* =========================================
    SENT
 ========================================= */
 
 section .messages .sent {
-  width: 100%;
+  width: 100%; 
 
+  margin: 10px 0 20px 0px;
   position: relative;
-
-  margin: 12px 0;
-
   display: flex;
   justify-content: flex-end;
 
   color: #fff;
 }
-
+section .sent h6 {
+  position: absolute;
+    bottom: -21px;
+    font-size: 9px;
+    color: #9c9c9c;
+    letter-spacing: 0.7px;
+}
 section .messages .sent span {
   max-width: 80%;
 
@@ -264,7 +273,7 @@ section .messages .received {
 
   position: relative;
 
-  margin: 12px 0;
+  margin: 10px 0 20px 0px;
 
   display: flex;
   justify-content: flex-start;
@@ -318,13 +327,13 @@ section .messages .drpDown {
 
   position: absolute;
 
-  top: 34px;
+  top: -36px;
 
   width: auto;
 
-  background-color: #000;
+  background-color: #907416;
 
-  border-radius: 5px;
+  border-radius: 50px;
 
   z-index: 10;
 }
@@ -346,16 +355,17 @@ section .messages .drpDown ul {
 
 section .messages .drpDown ul li {
   padding: 0 10px;
-
+border-right: 1px solid #5c5c5c;
   cursor: pointer;
+  font-size: 12px;
 }
 
-section .messages .drpDown ul li:first-child {
-  border-right: 1px solid #5c5c5c;
+section .messages .drpDown ul li:last-child {
+  border: 0;
 }
 
 section .messages .drpDown ul li i {
-  font-size: 14px;
+  font-size: 10px;
 }
 
 
@@ -419,11 +429,7 @@ section .text button {
   border: none;
   border-radius: 8px;
 
-  background: linear-gradient(
-    135deg,
-    #00c722,
-    #adefbd
-  );
+     background: linear-gradient(135deg, #0a7a1d, #14d743);
 
   color: #fff;
 

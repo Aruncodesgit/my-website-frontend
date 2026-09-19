@@ -19,15 +19,31 @@ section {
         margin-top: 100px;
     }
 }
- 
+
 
 #preloader {
-            background: rgba(0, 0, 0, .5)!important;
-    }
-  #preloader.hide {
+    background: rgba(0, 0, 0, .5) !important;
+}
+
+#preloader.hide {
     display: none;
-  } 
- #preloader.block {
+}
+
+#preloader.block {
     display: flex;
-  } 
- 
+}
+
+.error {
+    position: absolute;
+    top: 78px;
+    text-align: center;
+    margin: auto;
+    left: 0;
+    right: 0;
+    background-color: #4e0a0a;
+    width: 93%;
+    padding: 8px;
+    border-radius: 30px;
+    color: #ff7e7e;
+    border: 1px solid #ff3b3b;
+}
