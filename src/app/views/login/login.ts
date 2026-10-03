@@ -79,9 +79,7 @@ export class Login implements OnInit {
         await this.pushService.enablePush();
 
 
-        this.router.navigate([
-          '/dashboard'
-        ]);
+        this.router.navigate(['/dashboard']);
 
       },
 

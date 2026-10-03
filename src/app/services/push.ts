@@ -157,31 +157,26 @@ const subscription =
             .subscribe(
                 ({
                     notification
-                }) => {
-
-                    console.log(
-                        'Notification clicked:',
-                        notification
-                    );
+                }) => { 
 
 
-                    const data: any =
-                        notification.data;
+                    // const data: any =
+                    //     notification.data;
 
 
-                    if (data?.url) {
+                    // if (data?.url) {
 
-                        this.router.navigateByUrl(
-                            data.url
-                        );
+                    //     this.router.navigateByUrl(
+                    //         data.url
+                    //     );
 
-                    } else {
+                    // } else {
 
-                        this.router.navigate([
-                            '/login'
-                        ]);
+                    //     this.router.navigate([
+                    //         '/login'
+                    //     ]);
 
-                    }
+                    // }
 
                 }
             );
