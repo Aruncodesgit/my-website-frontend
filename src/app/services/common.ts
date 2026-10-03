@@ -277,6 +277,29 @@ export class Common {
     );
   }
 
+  getNotificationSettings() {
+    return this.http.get(
+      `${environment.apiProdUrl}/settings`, 
+      {
+        headers: {
+          Authorization: `Bearer ${this.getToken()}`
+        }
+      }
+    ); 
+  }
+
+  updateNotificationSettings(enabled: boolean) {
+    return this.http.put(
+      `${environment.apiProdUrl}/settings`,
+      { enabled },
+      {
+        headers: {
+          Authorization: `Bearer ${this.getToken()}`
+        }
+      }
+    );
+  }
+
 
   formatLastSeen(date: string): string {
     if (!date) {

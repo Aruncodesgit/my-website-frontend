@@ -674,8 +674,8 @@ background: radial-gradient(circle at 85% 100%, rgba(255, 8, 0, 0.18), transpare
 }
 
 .section-header h2 i {
-    color: #a855f7;
-    font-size: 20px;
+   color: #28a8ff;
+    font-size: 17px;
 }
 
 .section-header span {
@@ -941,4 +941,69 @@ background: radial-gradient(circle at 85% 100%, rgba(255, 8, 0, 0.18), transpare
 
 #preloader.block {
   display: flex;
+}
+
+
+/* Overlay */
+
+.drawer-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    z-index: 999;
+}
+
+
+/* Drawer */
+
+.link-drawer {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    background: #0b111e;
+    border-radius: 24px 24px 0 0;
+
+    z-index: 1000;
+
+    padding: 20px;
+
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+
+    max-height: 75vh;
+}
+
+
+/* Show drawer */
+
+.link-drawer.show {
+    transform: translateY(0);
+}
+
+ 
+
+/* Body */
+
+.drawer-body {
+    padding: 15px 0px;
+    ul {
+        list-style:none;
+        padding-left: 0px;
+        margin-bottom: 0px;
+        li {
+            display: flex;
+    align-items: center;
+    justify-content: space-between;
+    .form-check-input {
+            height: 1.5em;
+            width: 3em;
+    }
+    .form-check-input:checked {
+    background-color: #0eeb12;
+    border-color: #0eeb12;
+    }
+        }
+    }
 }

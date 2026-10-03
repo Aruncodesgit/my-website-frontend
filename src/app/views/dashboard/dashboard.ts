@@ -4,9 +4,11 @@ import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Common } from '../../services/common';
 import { timer, Subscription, exhaustMap } from 'rxjs';
+import { FormsModule } from '@angular/forms';
+import { PushService } from '../../services/push';
 
 @Component({
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   selector: 'app-dashboard',
   styleUrl: './dashboard.css',
   templateUrl: './dashboard.html',
@@ -23,9 +25,12 @@ export class Dashboard implements OnInit, OnDestroy {
   userName: any;
   onlineSubscription!: Subscription;
   heartbeatSubscription!: Subscription;
-  activityData:any;
-   accessChat: boolean = true;
-  constructor(private breakpointObserver: BreakpointObserver, private cdr: ChangeDetectorRef, public common: Common, private router: Router) {
+  activityData: any;
+  accessChat: boolean = true;
+  showDrawer = false;
+  notificationsEnabled = false;
+
+  constructor(private breakpointObserver: BreakpointObserver, private pushService: PushService, private cdr: ChangeDetectorRef, public common: Common, private router: Router) {
     this.breakpointObserver
       .observe(['(max-width: 767px)'])
       .subscribe(result => {
@@ -40,9 +45,9 @@ export class Dashboard implements OnInit, OnDestroy {
     this.getConversations()
     this.startHeartbeat();
     this.getActivity()
-
+    this.getNotificationSettings()
      this.accessChat = [
-      '6aa79fd3b0d5cd1f5fa84742',
+      '6aa79fd3b0d5cd1f5fa84742', 
       '6aa79fedb0d5cd1f5fa84744'
     ].includes(this.userId);
 
@@ -55,10 +60,10 @@ export class Dashboard implements OnInit, OnDestroy {
       )
       .subscribe({
         next: (response: any) => {
-          console.log('Heartbeat success');
+          //console.log('Heartbeat success');
         },
         error: (error: any) => {
-          console.error('Heartbeat failed:', error);
+          //console.error('Heartbeat failed:', error);
         }
       });
   }
@@ -76,7 +81,7 @@ export class Dashboard implements OnInit, OnDestroy {
         this.startGettingOnlinePolling();
       },
       (error: any) => {
-        console.error('Failed to fetch conversations:', error);
+        // console.error('Failed to fetch conversations:', error);
       }
     );
   }
@@ -109,18 +114,18 @@ export class Dashboard implements OnInit, OnDestroy {
   getActivity() {
 
     this.common.getActivity().subscribe(
-      (response: any) => { 
+      (response: any) => {
         this.activityData = response.data
-        console.log(this.activityData)
+        //console.log(this.activityData)
       },
       (error: any) => {
-        console.error('Failed to fetch conversations:', error);
+        //console.error('Failed to fetch conversations:', error);
       }
     );
   }
 
 
-  openChat() { 
+  openChat() {
     this.router.navigate(['/chat'])
   }
 
@@ -128,6 +133,36 @@ export class Dashboard implements OnInit, OnDestroy {
     this.router.navigate(['/youtube'])
   }
 
+  async toggleNotifications() {
+     await this.pushService.enablePush();
+
+    const payload = {
+      enabled: this.notificationsEnabled
+    };
+
+    if (payload.enabled) {
+
+      this.pushService.enablePush();
+
+    }
+
+   this.common.updateNotificationSettings(payload.enabled).subscribe(
+      (response: any) => {
+        // Handle success if needed
+      },
+      (error: any) => {
+        // Handle error if needed
+      }
+    );   
+  }
+
+  getNotificationSettings() {
+    this.common.getNotificationSettings().subscribe(
+      (response: any) => { 
+        this.notificationsEnabled = response.notificationsEnabled;
+      
+      } 
+    )}            
 
 
 
@@ -149,7 +184,7 @@ export class Dashboard implements OnInit, OnDestroy {
       },
       (error: any) => {
         this.isLoaderVisible = false
-        console.error('Logout failed:', error);
+        // console.error('Logout failed:', error);
       }
     );
   }

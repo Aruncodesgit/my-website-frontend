@@ -4,6 +4,7 @@ import { Common } from '../../services/common';
 import { CommonModule } from '@angular/common';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { Router } from '@angular/router';
+import { PushService } from '../../services/push';
 
 @Component({
   imports: [CommonModule, ReactiveFormsModule, FormsModule],
@@ -18,7 +19,7 @@ export class Login implements OnInit {
   errorMessage: any;
   email: any;
   @ViewChild('passwordInput') passwordInput!: ElementRef<HTMLInputElement>;
-  constructor(private cdr: ChangeDetectorRef, private breakpointObserver: BreakpointObserver, private fb: FormBuilder, private common: Common,
+  constructor(private cdr: ChangeDetectorRef, private pushService: PushService, private breakpointObserver: BreakpointObserver, private fb: FormBuilder, private common: Common,
     private router: Router
   ) {
     this.breakpointObserver
@@ -42,31 +43,57 @@ export class Login implements OnInit {
       this.passwordInput.nativeElement.focus();
     });
   }
- 
+
 
   onSubmit() {
     this.isLoaderVisible = true;
-    this.common.login(this.loginForm.value).subscribe(
-      (response: any) => {
-        console.log('Login successful:', response);
-        sessionStorage.setItem('token', response.token);
-        sessionStorage.setItem('userName', response.user.name);
+    this.common.login(this.loginForm.value).subscribe({
 
-        sessionStorage.setItem('userId', response.user.id);
-        this.router.navigate(['/chat']);
-        this.isLoaderVisible = false;
+      next: async (response: any) => {
+
+        console.log(
+          'Login successful:',
+          response
+        );
+
+
+        // YOUR EXISTING LOGIN CODE
+
+        sessionStorage.setItem(
+          'token',
+          response.token
+        );
+
+        sessionStorage.setItem(
+          'userId',
+          response.user._id
+        );
+
+        sessionStorage.setItem(
+          'userName',
+          response.user.name
+        );
+
+
+        // REGISTER THIS BROWSER FOR PUSH
+        await this.pushService.enablePush();
+
+
+        this.router.navigate([
+          '/dashboard'
+        ]);
+
       },
-      (error: any) => {
-        this.isLoaderVisible = false;
-        this.errorMessage = error.error.message;
-        this.loginForm.reset()
-        this.cdr.detectChanges()
-        console.log(this.errorMessage);
+
+      error: (error: any) => {
+
+        console.error(
+          'Login failed:',
+          error
+        );
 
       }
-    );
-    setTimeout(() => {
-      this.errorMessage = ''
-    }, 2000);
+
+    });
   }
 }
