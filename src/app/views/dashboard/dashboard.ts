@@ -133,8 +133,7 @@ export class Dashboard implements OnInit, OnDestroy {
     this.router.navigate(['/youtube'])
   }
 
-  async toggleNotifications() {
-     await this.pushService.enablePush();
+    toggleNotifications() { 
 
     const payload = {
       enabled: this.notificationsEnabled
