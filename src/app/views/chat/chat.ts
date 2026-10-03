@@ -7,8 +7,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { timer, Subscription } from 'rxjs';
 import { exhaustMap, switchMap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
+import { Play } from './play/play';
+const YT = (window as any).YT;
 @Component({
-  imports: [CommonModule, ReactiveFormsModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, Play],
   selector: 'app-chat',
   styleUrl: './chat.css',
   templateUrl: './chat.html',
@@ -34,8 +36,13 @@ export class Chat implements OnInit, OnDestroy {
   isMessageFocused = false;
   editingMessageId: any
   heartbeatSubscription!: Subscription;
-  accessChat: boolean = false
-  constructor(private breakpointObserver: BreakpointObserver, private common: Common, private router: Router, private cdr: ChangeDetectorRef) {
+  accessChat: boolean = true;
+  currentYoutubeVideoId: any;
+  @ViewChild('messagesContainer') messagesContainer!: ElementRef;
+  isUserAtBottom = true;
+  isInitialMessageLoad = true;
+  replyingTo: any = null;
+  constructor(private breakpointObserver: BreakpointObserver, public common: Common, private router: Router, private cdr: ChangeDetectorRef) {
     this.breakpointObserver
       .observe(['(max-width: 767px)'])
       .subscribe(result => {
@@ -48,6 +55,14 @@ export class Chat implements OnInit, OnDestroy {
 
     this.userId = sessionStorage.getItem('userId');
     this.userName = sessionStorage.getItem('userName');
+    // const youtubeUrl = sessionStorage.getItem('videoURL');
+    // if (youtubeUrl) {
+
+    //   this.selectedYoutubeUrl = this.getYoutubeEmbedUrl(youtubeUrl);
+
+    //   // Optional: remove after reading
+    //   sessionStorage.removeItem('selectedYoutubeUrl');
+    // }
     this.getConversations()
     this.startHeartbeat();
 
@@ -83,7 +98,6 @@ export class Chat implements OnInit, OnDestroy {
 
         this.startGettingOnlinePolling();
         this.startMessagePolling();
-        //this.startReadMessagePolling();
         this.markMessagesAsRead();
       },
       (error: any) => {
@@ -133,6 +147,12 @@ export class Chat implements OnInit, OnDestroy {
         next: (response: any) => {
 
           this.messageData = response.data;
+           if (this.isInitialMessageLoad) {
+          this.isInitialMessageLoad = false;
+          this.scrollToBottom(true);
+        } else {
+          this.scrollToBottom();
+        }
           const hasUnreadMessage = this.messageData.some(
             (msg: any) =>
               msg.receiverId === this.userId &&
@@ -151,6 +171,44 @@ export class Chat implements OnInit, OnDestroy {
       });
   }
 
+  onMessagesScroll(): void {
+
+  if (!this.messagesContainer) {
+    return;
+  }
+
+  const element = this.messagesContainer.nativeElement;
+
+  const distanceFromBottom =
+    element.scrollHeight -
+    element.scrollTop -
+    element.clientHeight;
+
+  this.isUserAtBottom = distanceFromBottom <= 50;
+}
+
+  scrollToBottom(force: boolean = false): void {
+    setTimeout(() => {
+      if (!this.messagesContainer) {
+        return;
+      }
+
+      // Don't force scrolling if user has manually moved up
+      if (!force && !this.isUserAtBottom) {
+        return;
+      }
+
+      const element = this.messagesContainer.nativeElement;
+
+      element.scrollTo({
+        top: element.scrollHeight,
+        behavior: 'smooth'
+      });
+
+      this.isUserAtBottom = true;
+    }, 0);
+  }
+
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent) {
@@ -162,8 +220,7 @@ export class Chat implements OnInit, OnDestroy {
     this.isMessageFocused = true;
   }
 
-  sendMessage() {
-
+  sendMessage() { 
     if (this.editingMessageId) {
       this.common.editMessage(this.editingMessageId, this.text).subscribe(res => {
         if (res) {
@@ -178,27 +235,64 @@ export class Chat implements OnInit, OnDestroy {
         })
     }
     else {
-      this.common.sendMessage({ conversationId: this.conversationId, receiverId: this.receiverId, text: this.text }).subscribe(
-        (response: any) => {
-          this.isMessageFocused = false;
-          console.log('Message sent successfully:', response);
-          this.text = '';
-          setTimeout(() => {
-            this.messageInput.nativeElement.style.height = '52px';
-            //   this.messageInput.nativeElement.focus();
-            //   this.isMessageFocused = true;
-          });
-          this.cdr.detectChanges()
+       this.common.sendMessage({
+        conversationId: this.conversationId,
+        receiverId: this.receiverId,
+        text: this.text.trim(),
+        replyTo: this.replyingTo?._id || null
+    }).subscribe({
+
+        next: (response: any) => {
+
+            console.log('Message sent successfully:', response);
+
+            this.text = '';
+            this.replyingTo = null;
+            this.isMessageFocused = false;
+
+            setTimeout(() => {
+                this.messageInput.nativeElement.style.height = '52px';
+            });
+
+            this.cdr.detectChanges();
         },
-        (error: any) => {
-          console.error('Failed to send message:', error);
+
+        error: (error: any) => {
+            console.error('Failed to send message:', error);
         }
-      );
+
+    });
     }
 
   }
 
+  scrollToMessage(messageId: string, event: MouseEvent) {
 
+    event.stopPropagation();
+
+    const element = document.getElementById(
+        'message-' + messageId
+    );
+
+    if (element) {
+
+        element.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center'
+        });
+
+        element.classList.add('reply-highlight');
+
+        setTimeout(() => {
+            element.classList.remove('reply-highlight');
+        }, 1200);
+    }
+}
+
+
+  goDashboard() {
+    this.router.navigate(['/dashboard'])
+  }
 
   logout() {
     const id = sessionStorage.getItem('userId');
@@ -214,7 +308,7 @@ export class Chat implements OnInit, OnDestroy {
       (response: any) => {
         this.isLoaderVisible = false
         this.router.navigate(['/login']);
-        this.clearStorage()
+        this.common.clearStorage()
       },
       (error: any) => {
         this.isLoaderVisible = false
@@ -247,50 +341,6 @@ export class Chat implements OnInit, OnDestroy {
     }
   }
 
-  formatLastSeen(date: string): string {
-    if (!date) {
-      return '';
-    }
-
-    const d = new Date(date);
-    const now = new Date();
-
-    const today = new Date(
-      now.getFullYear(),
-      now.getMonth(),
-      now.getDate()
-    );
-
-    const yesterday = new Date(today);
-    yesterday.setDate(today.getDate() - 1);
-
-    const dateOnly = new Date(
-      d.getFullYear(),
-      d.getMonth(),
-      d.getDate()
-    );
-
-    const time = d.toLocaleString('en-IN', {
-      hour: 'numeric',
-      minute: '2-digit',
-      hour12: true
-    });
-
-    if (dateOnly.getTime() === today.getTime()) {
-      return `Today, ${time}`;
-    }
-
-    if (dateOnly.getTime() === yesterday.getTime()) {
-      return `Yesterday, ${time}`;
-    }
-
-    return d.toLocaleString('en-IN', {
-      weekday: 'short',
-      hour: 'numeric',
-      minute: '2-digit',
-      hour12: true
-    });
-  }
 
   deleteAllMessages() {
     this.isLoaderVisible = true;
@@ -342,6 +392,24 @@ export class Chat implements OnInit, OnDestroy {
 
   }
 
+  replyMessage(msg: any, event: MouseEvent) {
+
+    event.stopPropagation();
+
+    this.replyingTo = msg;
+    this.showCopyId = null;
+
+    setTimeout(() => {
+        this.messageInput.nativeElement.focus();
+        this.isMessageFocused = true;
+    });
+}
+cancelReply(event?: MouseEvent) {
+
+    event?.stopPropagation();
+
+    this.replyingTo = null;
+}
 
   editMessage(id: string, text: any) {
     this.editingMessageId = id
@@ -362,16 +430,13 @@ export class Chat implements OnInit, OnDestroy {
     });
   }
 
-  clearStorage() {
-    sessionStorage.removeItem('token');
-    sessionStorage.removeItem('userId');
-    sessionStorage.removeItem('userName');
-  }
+
   ngOnDestroy() {
     this.messageSubscription?.unsubscribe();
     this.readSubscription?.unsubscribe();
     this.onlineSubscription?.unsubscribe();
     this.heartbeatSubscription?.unsubscribe();
+
     this.showCopyId = ''
   }
 }

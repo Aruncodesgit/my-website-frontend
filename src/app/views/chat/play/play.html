@@ -1,0 +1,17 @@
+<div class="youtube-container" [class.active]="currentYoutubeVideoId">
+    <div #youtubePlayer></div>
+</div>
+
+<div class="youtube-test-controls" >
+
+    <button type="button" (click)="testPlay()">
+        <i class="bi bi-play-fill"></i>
+    </button>
+
+    <button type="button"  (click)="testPause()">
+        <i class="bi bi-pause-fill"></i>
+    </button>
+    <button type="button" (click)="deleteCurrentPlay()">
+        <i class="bi bi-x-lg"></i>
+    </button>
+</div>

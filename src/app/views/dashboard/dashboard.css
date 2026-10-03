@@ -1,0 +1,944 @@
+section header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+
+    z-index: 100;
+
+    color: #fff;
+}
+
+section header ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    width: 100%;
+}
+
+section header ul li {
+    display: flex;
+    align-items: center;
+}
+
+section header ul li:first-child {
+    width: 69%;
+    height: 54px;
+
+    padding: 10px 14px;
+
+    background-color: #093056;
+
+    border-top-right-radius: 72px;
+}
+
+section header ul li.increase {
+    width: 78%;
+}
+
+section header ul li:last-child {
+    position: absolute;
+    right: 16px;
+    top: 8px;
+}
+
+section header .profile {
+    height: 35px;
+    margin-right: 10px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+section header .profile i {
+    position: relative;
+    top: 0;
+}
+
+section header p {
+    margin: 0;
+
+    font-size: 14px;
+    line-height: 18px;
+}
+
+
+section header button {
+    width: 40px;
+    height: 40px;
+
+    margin-left: 10px;
+
+    padding: 0;
+
+    border: 0;
+    border-radius: 6px;
+
+    background-color: #fff;
+
+    color: #093056;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+section header button i {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.content {
+    padding: 14px;
+}
+
+.welcome {
+    width: 100%;
+    margin-top: 32px;
+    font-size: 14px;
+
+    img {
+        width: 20px;
+        position: relative;
+        top: -3px;
+    }
+
+    h5 {
+        font-size: 18px;
+        margin-bottom: 0;
+        color: #d0d0d0;
+    }
+
+    p {
+        color: #656a76;
+    }
+}
+.OtherUser { 
+background: radial-gradient(circle at 85% 100%, rgba(255, 8, 0, 0.18), transparent 45%), linear-gradient(135deg, rgba(70, 0, 0, 0.55), rgba(3, 18, 25, 0.90));
+        border: 1px solid rgba(220, 0, 0, 0.55);
+        box-shadow:
+        0 0 18px rgba(255, 30, 0, 0.08),
+        inset 0 0 25px rgba(255, 0, 0, 0.04);
+}
+.OtherUser.active {
+     background:
+        radial-gradient(
+            circle at 85% 100%,
+            rgba(0, 255, 170, 0.18),
+            transparent 45%
+        ),
+        linear-gradient(
+            135deg,
+            rgba(0, 70, 55, 0.55),
+            rgba(3, 18, 25, 0.90)
+        );
+
+    border: 1px solid rgba(0, 220, 150, 0.55);
+
+    box-shadow:
+        0 0 18px rgba(0, 255, 170, 0.08),
+        inset 0 0 25px rgba(0, 255, 170, 0.04);
+}
+
+.OtherUser.offline {
+    background-color: #4b0a0a;
+    border: 1px solid #db2e2e;
+}
+
+.OtherUser {
+    width: 100%;
+    margin-top: 17px;
+    border-radius: 6px;
+    background-color: #000;
+    padding: 12px;
+
+    ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        width: 100%;
+
+        li {
+            display: flex;
+            align-content: center;
+
+            .profile {
+                width: 35px;
+                height: 35px;
+                border: 1px solid #ccc;
+                border-radius: 50%;
+                margin-right: 10px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                i {
+                    font-size: 20px;
+                    position: relative;
+                    top: -2px;
+                }
+            }
+        }
+
+        p {
+            margin-bottom: 0;
+            color: #fff;
+        }
+
+        .lastsceen {
+            margin-top: -3px;
+
+            span {
+                font-size: 10px;
+                position: absolute;
+            }
+
+            .online {
+                padding-left: 12px;
+            }
+
+            .online::before {
+                content: "";
+                position: absolute;
+                background-color: #05ff4b;
+                width: 8px;
+                height: 8px;
+                border-radius: 100%;
+                left: 0;
+                top: 4px;
+            }
+        }
+    }
+}
+.quick-actions {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+}
+.quick-card {
+    position: relative; 
+    padding: 8px 11px;
+
+    display: flex;
+    align-items: center;
+    gap: 14px;
+
+    border-radius: 6px;
+
+    color: #ffffff;
+
+    overflow: hidden;
+    cursor: pointer;
+
+    transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease,
+        border-color 0.3s ease;
+}
+
+
+/* =========================================
+   CARD HOVER
+========================================= */
+
+.quick-card:hover {
+    transform: translateY(-3px);
+}
+
+
+/* =========================================
+   PURPLE - UPLOAD SONG
+========================================= */
+
+.song-card {
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(91, 33, 182, 0.70),
+            rgba(49, 25, 91, 0.45)
+        );
+
+    border: 1px solid rgba(168, 85, 247, 0.65);
+
+    box-shadow:
+        0 0 25px rgba(139, 92, 246, 0.12),
+        inset 0 0 30px rgba(139, 92, 246, 0.06);
+}
+
+.song-card:hover {
+
+    border-color: rgba(168, 85, 247, 1);
+
+    box-shadow:
+        0 0 30px rgba(139, 92, 246, 0.28),
+        inset 0 0 30px rgba(139, 92, 246, 0.10);
+}
+
+
+/* =========================================
+   RED - YOUTUBE
+========================================= */
+
+.youtube-card {
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(190, 24, 93, 0.65),
+            rgba(87, 24, 43, 0.45)
+        );
+
+    border: 1px solid rgba(244, 63, 94, 0.65);
+
+    box-shadow:
+        0 0 25px rgba(244, 63, 94, 0.12),
+        inset 0 0 30px rgba(244, 63, 94, 0.06);
+}
+
+.youtube-card:hover {
+
+    border-color: rgba(244, 63, 94, 1);
+
+    box-shadow:
+        0 0 30px rgba(244, 63, 94, 0.28),
+        inset 0 0 30px rgba(244, 63, 94, 0.10);
+}
+
+
+/* =========================================
+   GREEN - CHAT
+========================================= */
+
+.chat-card {
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(5, 150, 105, 0.65),
+            rgba(6, 78, 59, 0.45)
+        );
+
+    border: 1px solid rgba(16, 185, 129, 0.65);
+
+    box-shadow:
+        0 0 25px rgba(16, 185, 129, 0.12),
+        inset 0 0 30px rgba(16, 185, 129, 0.06);
+}
+
+.chat-card:hover {
+
+    border-color: rgba(16, 185, 129, 1);
+
+    box-shadow:
+        0 0 30px rgba(16, 185, 129, 0.28),
+        inset 0 0 30px rgba(16, 185, 129, 0.10);
+}
+
+
+/* =========================================
+   BLUE - MUSIC
+========================================= */
+
+.music-card {
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(3, 105, 161, 0.65),
+            rgba(7, 47, 75, 0.45)
+        );
+
+    border: 1px solid rgba(14, 165, 233, 0.65);
+
+    box-shadow:
+        0 0 25px rgba(14, 165, 233, 0.12),
+        inset 0 0 30px rgba(14, 165, 233, 0.06);
+}
+
+.music-card:hover {
+
+    border-color: rgba(14, 165, 233, 1);
+
+    box-shadow:
+        0 0 30px rgba(14, 165, 233, 0.28),
+        inset 0 0 30px rgba(14, 165, 233, 0.10);
+}
+
+
+/* =========================================
+   ORANGE - NOTES
+========================================= */
+
+.notes-card {
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(180, 83, 9, 0.65),
+            rgba(92, 48, 5, 0.45)
+        );
+
+    border: 1px solid rgba(245, 158, 11, 0.65);
+
+    box-shadow:
+        0 0 25px rgba(245, 158, 11, 0.12),
+        inset 0 0 30px rgba(245, 158, 11, 0.06);
+}
+
+.notes-card:hover {
+
+    border-color: rgba(245, 158, 11, 1);
+
+    box-shadow:
+        0 0 30px rgba(245, 158, 11, 0.28),
+        inset 0 0 30px rgba(245, 158, 11, 0.10);
+}
+
+
+/* =========================================
+   INDIGO - FILES
+========================================= */
+
+.files-card {
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(67, 56, 202, 0.65),
+            rgba(30, 27, 75, 0.45)
+        );
+
+    border: 1px solid rgba(99, 102, 241, 0.65);
+
+    box-shadow:
+        0 0 25px rgba(99, 102, 241, 0.12),
+        inset 0 0 30px rgba(99, 102, 241, 0.06);
+}
+
+.files-card:hover {
+
+    border-color: rgba(99, 102, 241, 1);
+
+    box-shadow:
+        0 0 30px rgba(99, 102, 241, 0.28),
+        inset 0 0 30px rgba(99, 102, 241, 0.10);
+}
+
+
+/* =========================================
+   ICON
+========================================= */
+
+.card-icon {
+
+    flex: 0 0 52px;
+
+    width: 52px;
+    height: 52px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    color: #ffffff;
+
+    font-size: 23px;
+
+    background: rgba(255, 255, 255, 0.10);
+
+    border: 1px solid rgba(255, 255, 255, 0.15);
+
+    backdrop-filter: blur(10px);
+
+    transition: 0.3s ease;
+}
+
+
+/* ICON COLORS */
+
+.song-card .card-icon {
+
+    background: linear-gradient(
+        135deg,
+        #a855f7,
+        #6d28d9
+    );
+
+    box-shadow:
+        0 0 22px rgba(168, 85, 247, 0.40);
+}
+
+
+.youtube-card .card-icon {
+
+    background: linear-gradient(
+        135deg,
+        #fb7185,
+        #dc2626
+    );
+
+    box-shadow:
+        0 0 22px rgba(239, 68, 68, 0.40);
+}
+
+
+.chat-card .card-icon {
+
+    background: linear-gradient(
+        135deg,
+        #34d399,
+        #059669
+    );
+
+    box-shadow:
+        0 0 22px rgba(16, 185, 129, 0.40);
+}
+
+
+.music-card .card-icon {
+
+    background: linear-gradient(
+        135deg,
+        #38bdf8,
+        #0284c7
+    );
+
+    box-shadow:
+        0 0 22px rgba(14, 165, 233, 0.40);
+}
+
+
+.notes-card .card-icon {
+
+    background: linear-gradient(
+        135deg,
+        #fbbf24,
+        #d97706
+    );
+
+    box-shadow:
+        0 0 22px rgba(245, 158, 11, 0.40);
+}
+
+
+.files-card .card-icon {
+
+    background: linear-gradient(
+        135deg,
+        #818cf8,
+        #4f46e5
+    );
+
+    box-shadow:
+        0 0 22px rgba(99, 102, 241, 0.40);
+}
+
+
+/* =========================================
+   CONTENT
+========================================= */
+
+.card-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.card-content h3 {
+
+    margin: 0 0 5px;
+
+    font-size: 17px;
+    font-weight: 600;
+
+    color: #ffffff;
+}
+
+.card-content p {
+
+    margin: 0;
+
+    font-size: 13px;
+
+    color: rgba(255, 255, 255, 0.65);
+
+    line-height: 1.4;
+}
+
+
+/* =========================================
+   ARROW
+========================================= */
+
+.card-arrow {
+
+    flex: 0 0 auto;
+
+    font-size: 20px;
+
+    color: rgba(255, 255, 255, 0.75);
+
+    transition: 0.3s ease;
+}
+
+.quick-card:hover .card-arrow {
+
+    transform: translateX(4px);
+
+    color: #ffffff;
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 600px) {
+
+    .quick-actions {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+ 
+
+    .card-icon {
+        width: 44px;
+        height: 44px;
+        flex-basis: 44px;
+        font-size: 19px;
+    }
+
+    .card-content h3 {
+        font-size: 14px;
+    }
+
+    
+
+    .card-arrow {
+        font-size: 17px;
+    }
+}
+.add {
+    h5 {
+        font-size: 16px;
+        color: #d0d0d0;
+            margin-top: 20px;
+    } 
+}
+
+/* ========================================
+   RECENT ACTIVITY
+======================================== */
+
+.recent-section {
+    width: 100%; 
+}
+
+
+/* ========================================
+   HEADER
+======================================== */
+
+.section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.section-header h2 {
+    margin: 0; 
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
+    color: #ffffff;
+    margin-top: 20px;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.section-header h2 i {
+    color: #a855f7;
+    font-size: 20px;
+}
+
+.section-header span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+
+    color: #8f9bb5;
+
+    font-size: 12px;
+
+    cursor: pointer;
+}
+
+.section-header span i {
+    font-size: 11px;
+}
+
+
+/* ========================================
+   ACTIVITY CONTAINER
+======================================== */
+
+.activity-list {
+    overflow: hidden;
+
+    border-radius: 12px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(12, 21, 43, 0.95),
+            rgba(3, 8, 20, 0.98)
+        );
+
+    border: 1px solid rgba(100, 120, 170, 0.14);
+
+    box-shadow:
+        0 8px 30px rgba(0, 0, 0, 0.20),
+        inset 0 0 25px rgba(80, 100, 180, 0.025);
+}
+
+
+/* ========================================
+   ACTIVITY ITEM
+======================================== */
+
+.activity-item {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 15px 14px;
+
+    min-height: 70px;
+}
+
+
+/* separator */
+
+.activity-item:not(:last-child)::after {
+    content: "";
+
+    position: absolute;
+
+    left: 14px;
+    right: 14px;
+    bottom: 0;
+
+    height: 1px;
+
+    background: rgba(255, 255, 255, 0.06);
+}
+
+
+/* ========================================
+   ICON
+======================================== */
+
+.activity-icon {
+    flex: 0 0 42px;
+
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    font-size: 18px;
+
+    color: #ffffff;
+}
+
+
+/* Song */
+
+.activity-icon.song {
+    background:
+        linear-gradient(
+            135deg,
+            #6d28d9,
+            #3b1678
+        );
+
+    box-shadow:
+        0 0 15px rgba(124, 58, 237, 0.25);
+}
+
+
+/* YouTube */
+
+.activity-icon.youtube {
+    background:
+        linear-gradient(
+            135deg,
+            #ef4444,
+            #8f1725
+        );
+
+    box-shadow:
+        0 0 15px rgba(239, 68, 68, 0.22);
+}
+
+
+/* Note */
+
+.activity-icon.note {
+    background:
+        linear-gradient(
+            135deg,
+            #f59e0b,
+            #9a4f04
+        );
+
+    box-shadow:
+        0 0 15px rgba(245, 158, 11, 0.20);
+}
+
+
+/* ========================================
+   CONTENT
+======================================== */
+
+.activity-content {
+    flex: 1;
+
+    min-width: 0;
+}
+
+.activity-content h3 {
+    margin: 0 0 4px;
+
+    color: #ffffff;
+
+    font-size: 14px;
+    font-weight: 500;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.activity-content p {
+    margin: 0;
+
+    color: #7f8ba6;
+
+    font-size: 12px;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+/* ========================================
+   TIME
+======================================== */
+.no-recent {
+        min-height: 189px;
+    text-align: center;
+    font-size: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center; 
+    opacity: 0.5;
+}
+.activity-time {
+    flex: 0 0 auto;
+
+    color: #8797b7;
+
+    font-size: 10px;
+
+    white-space: nowrap;
+}
+
+
+/* ========================================
+   HOVER
+======================================== */
+
+.activity-item {
+    transition: background 0.25s ease;
+}
+
+.activity-item:hover {
+    background: rgba(255, 255, 255, 0.025);
+}
+
+
+/* ========================================
+   MOBILE
+======================================== */
+
+@media (max-width: 600px) { 
+
+    .activity-item {
+        padding: 13px 12px;
+        gap: 10px;
+    }
+
+    .activity-icon {
+        width: 40px;
+        height: 40px;
+        flex-basis: 40px;
+
+        font-size: 17px;
+    }
+
+    .activity-content h3 {
+        font-size: 13px;
+    }
+
+    .activity-content p {
+        font-size: 11px;
+    }
+
+    .activity-time {
+        font-size: 9px;
+    }
+
+    .activity-item:not(:last-child)::after {
+        left: 12px;
+        right: 12px;
+    }
+}
+
+
+#preloader {
+  background: rgba(0, 0, 0, 0.5) !important;
+}
+
+#preloader.hide {
+  display: none;
+}
+
+#preloader.block {
+  display: flex;
+}

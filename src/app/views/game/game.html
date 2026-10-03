@@ -1,0 +1,107 @@
+<section *ngIf="isMobile">
+    <div class="row">
+        <div class="col-md-12">
+            <header>
+                <ul>
+                    <li class="increase">
+                        <div class="profile" (click)="goDashboard()">
+                            <i class="bi bi-arrow-left"></i>
+                        </div>
+                        <div>
+                            <p>Slide & Ladder</p>
+                        </div>
+                    </li>
+                    <li>
+                        <button><i class="bi bi-pause-fill"></i></button>
+                    </li>
+                </ul>
+            </header>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="game-match-header">
+
+                <div class="player-info player-left">
+                    <div class="player-avatar player-one-avatar">
+                        A1
+                    </div>
+
+                    <div class="player-details">
+                        <span class="player-name">A01</span>
+                    </div>
+                </div>
+
+
+                <div class="vs-section">
+                    <span class="vs-line"></span>
+                    <span class="vs-text">VS</span>
+                    <span class="vs-line"></span>
+                </div>
+
+
+                <div class="player-info player-right">
+
+                    <div class="player-details">
+                        <span class="player-name">A02</span>
+                    </div>
+
+                    <div class="player-avatar player-two-avatar">
+                        A2
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="turn-indicator" (click)="rollDice()">
+                <div class="dice" [class.rolling]="isRolling">
+                    <span class="dot" [class.active]="isDotActive(1)"></span>
+                    <span class="dot" [class.active]="isDotActive(2)"></span>
+                    <span class="dot" [class.active]="isDotActive(3)"></span>
+
+                    <span class="dot" [class.active]="isDotActive(4)"></span>
+                    <span class="dot" [class.active]="isDotActive(5)"></span>
+                    <span class="dot" [class.active]="isDotActive(6)"></span>
+
+                    <span class="dot" [class.active]="isDotActive(7)"></span>
+                    <span class="dot" [class.active]="isDotActive(8)"></span>
+                    <span class="dot" [class.active]="isDotActive(9)"></span>
+                </div>
+
+                <div class="turn-content">
+                    <span class="turn-label">CURRENT TURN</span>
+                    <span class="turn-player">
+                        <span class="turn-dot"></span>
+                        A01's Turn
+                    </span>
+                </div>
+
+                <span class="turn-arrow">→</span>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="game-board">
+                <img src="assets/images/board.jpg" class="board"/>
+                <div class="board-cell" *ngFor="let cell of cells" [class.player-one]="playerOnePosition === cell"
+                    [class.player-two]="playerTwoPosition === cell" [class.both-players]="
+      playerOnePosition === cell && playerTwoPosition === cell
+    ">
+                    <span class="cell-number">{{ cell }}</span>
+
+                    <div class="players">
+                        <span class="player-token player-one-token" *ngIf="playerOnePosition === cell">
+
+                        </span>
+
+                        <span class="player-token player-two-token" *ngIf="playerTwoPosition === cell">
+
+                        </span>
+                    </div>
+                    
+                </div>  
+            </div>
+        </div>
+    </div>
+</section>

@@ -16,7 +16,7 @@ export class Login implements OnInit {
   isMobile: boolean = false;
   isLoaderVisible: boolean = false;
   errorMessage: any;
-  email:any;
+  email: any;
   @ViewChild('passwordInput') passwordInput!: ElementRef<HTMLInputElement>;
   constructor(private cdr: ChangeDetectorRef, private breakpointObserver: BreakpointObserver, private fb: FormBuilder, private common: Common,
     private router: Router
@@ -38,12 +38,14 @@ export class Login implements OnInit {
 
   fill() {
     this.email += '@gmail.com';
-     setTimeout(() => {
-    this.passwordInput.nativeElement.focus();
-  });
+    setTimeout(() => {
+      this.passwordInput.nativeElement.focus();
+    });
   }
+ 
+
   onSubmit() {
-    this.isLoaderVisible = true; 
+    this.isLoaderVisible = true;
     this.common.login(this.loginForm.value).subscribe(
       (response: any) => {
         console.log('Login successful:', response);
@@ -51,20 +53,20 @@ export class Login implements OnInit {
         sessionStorage.setItem('userName', response.user.name);
 
         sessionStorage.setItem('userId', response.user.id);
-        this.router.navigate(['/chat']); 
+        this.router.navigate(['/chat']);
         this.isLoaderVisible = false;
       },
-      (error: any) => { 
+      (error: any) => {
         this.isLoaderVisible = false;
         this.errorMessage = error.error.message;
         this.loginForm.reset()
         this.cdr.detectChanges()
-        console.log(this.errorMessage); 
-      
+        console.log(this.errorMessage);
+
       }
     );
-      setTimeout(() => {
-          this.errorMessage = ''
-        }, 2000);
+    setTimeout(() => {
+      this.errorMessage = ''
+    }, 2000);
   }
 }

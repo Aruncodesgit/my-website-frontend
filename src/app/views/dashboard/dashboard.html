@@ -1,0 +1,205 @@
+<section *ngIf="isMobile && accessChat">
+    <div class="row">
+        <div class="col-md-12">
+            <header>
+                <ul>
+                    <li class="increase">
+                        <div>
+                            <p>Dashboard</p>
+                        </div>
+                    </li>
+                    <li>
+                        <button (click)="logout()"><i class="bi bi bi-power"></i></button>
+                    </li>
+                </ul>
+            </header>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="content">
+                <div class="welcome">
+                    <h5>Hi, {{userName}} <img src="../../../assets/images/hand.png"></h5>
+                    <p>Welcome back...</p>
+                </div>
+                <div class="OtherUser " [class.active]="receiverisOnline">
+                    <ul>
+                        <li>
+                            <div class="profile">
+                                <i class="bi bi-person"></i>
+                            </div>
+                            <div class="lastsceen">
+                                <p>{{receiverUserName}}</p>
+                                <span class="online" *ngIf="receiverisOnline">Online</span>
+                                <span class="lastsceen" *ngIf="!receiverisOnline">last sceen
+                                    {{common.formatLastSeen(receiverLastSeen) }}</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="add">
+                    <div class="section-header">
+                        <h2>
+                            <i class="bi bi-clock-history"></i>
+                            Quick Actions
+                        </h2>
+                    </div>
+                    <div class="quick-actions">
+
+                        <!-- Chat -->
+                        <div class="quick-card chat-card" (click)="openChat()">
+
+                            <div class="card-icon">
+                                <i class="bi bi-chat-dots"></i>
+                            </div>
+
+                            <div class="card-content">
+                                <h3>Chat</h3>
+                            </div>
+
+                            <div class="card-arrow">
+                                <i class="bi bi-arrow-right"></i>
+                            </div>
+
+                        </div>
+                         
+                        <!-- YouTube (click)="goYoutube()"-->
+                        <div class="quick-card youtube-card" >
+
+                            <!-- <div class="card-icon">
+                                <i class="bi bi-youtube"></i>
+                            </div>
+
+                            <div class="card-content">
+                                <h3>YouTube Link</h3>
+                            </div>
+
+                            <div class="card-arrow">
+                                <i class="bi bi-arrow-right"></i>
+                            </div> -->
+
+                        </div>
+
+
+                        
+                        <!-- Upload Song  
+                        <div class="quick-card song-card">
+
+                            <div class="card-icon">
+                                <i class="bi bi-music-note-beamed"></i>
+                            </div>
+
+                            <div class="card-content">
+                                <h3>Upload Song</h3>
+                            </div>
+
+                            <div class="card-arrow">
+                                <i class="bi bi-arrow-right"></i>
+                            </div>
+
+                        </div>
+
+ 
+                        <div class="quick-card music-card">
+
+                            <div class="card-icon">
+                                <i class="bi bi-music-note-list"></i>
+                            </div>
+
+                            <div class="card-content">
+                                <h3>Music</h3>
+                            </div>
+
+                            <div class="card-arrow">
+                                <i class="bi bi-arrow-right"></i>
+                            </div>
+
+                        </div>
+
+ 
+                        <div class="quick-card notes-card">
+
+                            <div class="card-icon">
+                                <i class="bi bi-journal-text"></i>
+                            </div>
+
+                            <div class="card-content">
+                                <h3>Notes</h3> 
+                            </div>
+
+                            <div class="card-arrow">
+                                <i class="bi bi-arrow-right"></i>
+                            </div>
+
+                        </div> 
+
+ 
+                        <div class="quick-card files-card">
+
+                            <div class="card-icon">
+                                <i class="bi bi-folder2-open"></i>
+                            </div>
+
+                            <div class="card-content">
+                                <h3>Files</h3> 
+                            </div>
+
+                            <div class="card-arrow">
+                                <i class="bi bi-arrow-right"></i>
+                            </div>
+
+                        </div> -->
+
+                    </div>
+                </div>
+                <div class="recent-section">
+
+                    <div class="section-header">
+                        <h2>
+                            <i class="bi bi-clock-history"></i>
+                            Recent Activity
+                        </h2>
+                    </div>
+
+
+                    <div class="activity-list">
+
+                        <!-- Activity 1 -->
+                        <div class="activity-item" *ngFor="let data of activityData">
+
+                            <div class="activity-icon song" *ngIf="data.type == 'song' ">
+                                <i class="bi bi-music-note-beamed"></i>
+                            </div>
+                            <div class="activity-icon youtube" *ngIf="data.type == 'youtube' ">
+                                <i class="bi bi-youtube"></i>
+                            </div>
+
+                            <div class="activity-content">
+                                <h3> {{data.message}}</h3>
+                                <p *ngIf="userName != data.userName">Added by - {{data.userName}}</p>
+                                <p *ngIf="userName == data.userName">
+                                    You added 
+                                </p>
+                            </div>
+
+                            <div class="activity-time">
+                                {{common.formatLastSeen(data.createdAt) }}
+                            </div>
+
+                        </div>
+
+                        <div *ngIf="activityData?.length == 0" class="no-recent">
+                            No Recent Activity !
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+<div id="preloader" [ngClass]="isLoaderVisible ? 'block' : 'hide' ">
+    <div class="loader"></div>
+</div>

@@ -1,0 +1,591 @@
+section header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+
+    z-index: 100;
+    background-color: #0a1020;
+    color: #fff;
+}
+
+section header ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    width: 100%;
+}
+
+section header ul li {
+    display: flex;
+    align-items: center;
+}
+
+
+section header ul li:first-child {
+  width: 69%;
+  height: 54px;
+
+  padding: 10px 14px;
+
+  background-color: #093056;
+
+  border-top-right-radius: 72px;
+}
+
+section header ul li.increase {
+  width: 78%;
+}
+
+section header ul li:last-child {
+  position: absolute;
+  right: 16px;
+  top: 8px;
+}
+ 
+section header .profile {
+        width: 35px;
+    height: 35px;
+    border: 1px solid #ccc;
+    border-radius: 50%;
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+section header .profile i {
+    position: relative;
+    top: 0;
+}
+
+section header p {
+  margin: 0;
+
+  font-size: 14px;
+  line-height: 18px;
+}
+
+section header button {
+  width: 40px;
+  height: 40px;
+
+  margin-left: 10px;
+
+  padding: 0;
+
+  border: 0;
+  border-radius: 6px;
+
+  background-color: #fff;
+
+  color: #093056;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+section header button i {
+  font-size: 18px;
+  font-weight: bold;
+} 
+
+
+.game-board {
+         width: 92%;
+        margin: auto;
+  aspect-ratio: 1 / 1;
+          margin-top: 25px;
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  grid-template-rows: repeat(10, 1fr);
+ 
+  border-radius: 14px;
+  overflow: hidden;
+
+  background: #071d12;
+  position: relative; 
+}
+
+.board-cell {
+  position: relative;
+
+  display: flex;  
+  visibility: hidden;
+  align-items: flex-start;
+  justify-content: flex-end;
+
+  min-width: 0;
+  min-height: 0;
+
+  padding: 5px;
+
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+
+  background: rgba(15, 55, 35, 0.65);
+
+  transition: background 0.2s ease;
+
+  &:nth-child(odd) {
+    background: rgba(12, 45, 29, 0.75);
+  }
+
+  &:hover {
+    background: rgba(30, 90, 58, 0.8);
+  }
+}
+
+.cell-number {
+  position: relative;
+  z-index: 2;
+
+  font-size: clamp(8px, 1.8vw, 14px);
+  font-weight: 600;
+
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 10px;
+}
+
+/* Player area */
+
+.players {
+  position: absolute;
+
+  inset: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 2px;
+
+  z-index: 5;
+  visibility: visible;
+}
+
+.player-token {
+  width: 12px;
+    height: 12px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  font-size: clamp(6px, 1.4vw, 10px);
+  font-weight: 800;
+
+  color: #fff;
+
+  border: 1px solid rgba(255, 255, 255, 0.8);
+
+  box-shadow:
+    0 4px 10px rgba(0, 0, 0, 0.4),
+    inset 0 2px 4px rgba(255, 255, 255, 0.25);
+}
+
+/* A01 */
+
+.player-one-token {
+  background: linear-gradient(
+    135deg,
+    #ff5f6d,
+    #c9184a
+  );
+}
+
+/* A02 */
+
+.player-two-token {
+  background: linear-gradient(
+    135deg,
+    #4facfe,
+    #246bfd
+  );
+}
+
+/* Cell containing A01 */
+
+.board-cell.player-one {
+  box-shadow:
+    inset 0 0 0 2px rgba(255, 95, 109, 0.45);
+}
+
+/* Cell containing A02 */
+
+.board-cell.player-two {
+  box-shadow:
+    inset 0 0 0 2px rgba(79, 172, 254, 0.45);
+}
+
+/* Both players */
+
+.board-cell.both-players {
+
+  .players {
+    gap: 0;
+  }
+
+  .player-token {
+    margin-left: -5px;
+
+    &:first-child {
+      margin-left: 0;
+    }
+  }
+}
+
+.game-match-header {
+  width: 92%;
+  margin: auto;
+      margin-top: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 14px 18px;
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(19, 102, 49, 0.45),
+      rgba(6, 29, 8, 0.75)
+    );
+
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+
+/* ---------------- PLAYER ---------------- */
+
+.player-info {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  min-width: 105px;
+}
+
+.player-right {
+  justify-content: flex-end;
+  text-align: right;
+}
+
+.player-avatar {
+  width: 42px;
+  height: 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  font-size: 12px;
+  font-weight: 800;
+
+  color: #fff;
+
+  border: 2px solid rgba(255, 255, 255, 0.7);
+
+  box-shadow:
+    0 5px 15px rgba(0, 0, 0, 0.35),
+    inset 0 2px 5px rgba(255, 255, 255, 0.2);
+}
+
+
+/* A01 */
+
+.player-one-avatar {
+  background: linear-gradient(
+    135deg,
+    #ff5f6d,
+    #c9184a
+  );
+}
+
+
+/* A02 */
+
+.player-two-avatar {
+  background: linear-gradient(
+    135deg,
+    #4facfe,
+    #246bfd
+  );
+}
+
+
+.player-details {
+  display: flex;
+  flex-direction: column;
+
+  gap: 3px;
+}
+
+.player-name {
+  color: #fff;
+
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.player-status {
+  display: flex;
+  align-items: center;
+
+  gap: 5px;
+
+  color: rgba(255, 255, 255, 0.55);
+
+  font-size: 10px;
+}
+
+
+/* Online dot */
+
+.status-dot {
+  width: 6px;
+  height: 6px;
+
+  border-radius: 50%;
+
+  background: #22c55e;
+
+  box-shadow:
+    0 0 8px rgba(34, 197, 94, 0.8);
+}
+
+
+/* ---------------- VS ---------------- */
+
+.vs-section {
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+
+  margin: 0 12px;
+}
+
+.vs-line {
+  width: 20px;
+  height: 1px;
+
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.vs-text {
+  color: rgba(255, 255, 255, 0.4);
+
+  font-size: 10px;
+  font-weight: 800;
+
+  letter-spacing: 1px;
+}
+
+
+/* ---------------- TURN ---------------- */
+
+.turn-indicator {
+  width: 92%;
+  margin: auto;
+
+  display: flex;
+  align-items: center;
+
+  margin-top: 10px;
+
+  padding: 11px 15px;
+
+  border-radius: 14px;
+
+  border: 1px solid rgba(34, 197, 94, 0.18);
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(34, 197, 94, 0.10),
+      rgba(6, 29, 8, 0.35)
+    );
+}
+
+.turn-icon {
+  width: 34px;
+  height: 34px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-right: 10px;
+
+  border-radius: 10px;
+
+  background: rgba(34, 197, 94, 0.12);
+
+  font-size: 17px;
+  
+}
+.dice {
+     width: 40px;
+    height: 40px;
+    margin-right: 15px; 
+
+  padding: 8px;
+
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+
+  background: #fff;
+  border-radius: 12px;
+
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.35),
+    inset 0 0 0 2px rgba(0, 0, 0, 0.08);
+
+  cursor: pointer;
+   transform-style: preserve-3d;
+  perspective: 800px;
+}
+.dice span {
+  transform: translateZ(20px);
+}
+.dice.rolling {
+  animation: dice3DRoll 0.8s ease-in-out;
+}
+
+@keyframes dice3DRoll {
+  0% {
+    transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg);
+  }
+
+  20% {
+    transform: rotateX(90deg) rotateY(80deg) rotateZ(15deg);
+  }
+
+  40% {
+    transform: rotateX(180deg) rotateY(160deg) rotateZ(-10deg);
+  }
+
+  60% {
+    transform: rotateX(270deg) rotateY(240deg) rotateZ(10deg);
+  }
+
+  80% {
+    transform: rotateX(360deg) rotateY(320deg) rotateZ(-5deg);
+  }
+
+  100% {
+    transform: rotateX(360deg) rotateY(360deg) rotateZ(0deg);
+  }
+}
+.turn-content {
+  display: flex;
+  flex-direction: column;
+
+  gap: 2px;
+
+  flex: 1;
+}
+
+.turn-label {
+  color: rgba(255, 255, 255, 0.4);
+
+  font-size: 8px;
+  font-weight: 700;
+
+  letter-spacing: 1px;
+}
+
+.turn-player {
+  display: flex;
+  align-items: center;
+
+  gap: 6px;
+
+  color: #fff;
+
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.turn-dot {
+  width: 7px;
+  height: 7px;
+
+  border-radius: 50%;
+
+  background: #22c55e;
+
+  box-shadow:
+    0 0 10px rgba(34, 197, 94, 0.9);
+
+  animation: turnPulse 1.5s infinite;
+}
+
+.turn-arrow {
+  color: rgba(255, 255, 255, 0.35);
+
+  font-size: 18px;
+}
+
+
+@keyframes turnPulse {
+
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.45;
+    transform: scale(1.35);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+}
+
+  .dot {
+  width: 5px;
+  height: 5px;
+
+  align-self: center;
+  justify-self: center;
+
+  border-radius: 50%;
+
+  background: transparent;
+}
+
+.dot.active {
+  background: #111827;
+}
+ 
+.board {
+      width: 100%;
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin: auto;
+}

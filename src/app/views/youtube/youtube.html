@@ -1,0 +1,95 @@
+<section *ngIf="isMobile && accessChat">
+    <div class="row">
+        <div class="col-md-12">
+            <header>
+                <ul>
+                    <li [class.increase]="userName == 'A02'">
+                        <div class="profile" (click)="goDashboard()">
+                            <i class="bi bi-arrow-left"></i>
+                        </div>
+                        <div>
+                            <p>Youtube Links</p>
+                        </div>
+                    </li>
+                    <li>
+                        <button *ngIf="userName == 'A01'" (click)="deleteAllLinks()"><i
+                                class="bi bi-trash"></i></button>
+                        <button (click)="showLinkDrawer = true"><i class="bi bi bi-plus"></i></button>
+                    </li>
+                </ul>
+            </header>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="link-section">
+                <div class="link-list" *ngFor="let l of links">
+                    <!-- YouTube -->
+                    <a class="link-card youtube-link" [class.green]="l.isRead == true">
+
+                        <div class="link-content">
+                            <h3>{{l.comments}}</h3>
+                            <p>{{l.link}}</p>
+                            <span *ngIf="userName != l.userName">Added by - {{l.userName}} &nbsp;|&nbsp;
+                                {{common.formatLastSeen(l.createdAt)}}</span>
+                            <span *ngIf="userName == l.userName">
+                                You added &nbsp;|&nbsp; {{common.formatLastSeen(l.createdAt)}}
+                            </span>
+                        </div>
+                        <button class="link-action" (click)="markYoutubeLinkAsRead(l, 'chat')">
+                            <i class="bi bi-chat-dots"></i>
+                        </button>&nbsp;&nbsp;
+                        <a class="link-action" (click)="markYoutubeLinkAsRead(l, '')" [href]="l.link" target="_bank">
+                            <i class="bi bi-box-arrow-up-right"></i>
+                        </a>
+
+                    </a>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="drawer-overlay" *ngIf="showLinkDrawer" (click)="showLinkDrawer = false"> </div>
+
+<!-- Bottom Drawer -->
+
+<div class="link-drawer" [class.show]="showLinkDrawer">
+
+    <div class="drawer-header">
+
+        <div>
+            <h3>Add Link</h3>
+        </div>
+
+        <button type="button" class="drawer-close" (click)="showLinkDrawer = false">
+            <i class="bi bi-x-lg"></i>
+        </button>
+
+    </div>
+
+    <div class="drawer-body">
+
+        <form [formGroup]="linkForm" (ngSubmit)="onSubmit()">
+
+            <div class="input-group">
+                <textarea formControlName="comments" rows="2" placeholder="Write anything...">
+    </textarea>
+
+            </div>
+            <div class="input-group">
+                <textarea formControlName="link" placeholder="Paste YouTube link">
+    </textarea>
+
+            </div>
+            <button type="submit" class="drawer-submit">
+                Add Link
+            </button>
+
+        </form>
+
+    </div>
+
+</div>

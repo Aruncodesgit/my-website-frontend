@@ -4,14 +4,14 @@
             <header>
                 <ul>
                     <li [class.increase]="userName == 'A02'">
-                        <div class="profile">
-                            <i class="bi bi-person"></i>
+                        <div class="profile" (click)="goDashboard()">
+                            <i class="bi bi-arrow-left"></i>
                         </div>
                         <div>
                             <p>{{receiverUserName}}</p>
                             <span class="status" *ngIf="receiverisOnline">Online</span>
                             <span class="lastsceen" *ngIf="!receiverisOnline">last sceen
-                                {{formatLastSeen(receiverLastSeen) }}</span>
+                                {{common.formatLastSeen(receiverLastSeen) }}</span>
                         </div>
                     </li>
                     <li>
@@ -21,35 +21,73 @@
                     </li>
                 </ul>
             </header>
-            <div class="messages" (click)="closeDropDown()">
+
+            <app-play (currentYoutubeVideoIdChange)="currentYoutubeVideoId = $event"></app-play>
+
+            <div class="messages" #messagesContainer (scroll)="onMessagesScroll()" (click)="closeDropDown()"
+                [class.descrease]="currentYoutubeVideoId">
                 <div *ngFor="let msg of messageData" [ngClass]="[
   msg.senderId === userId ? 'sent' : 'received',
   showCopyId && showCopyId === msg._id ? 'notBlur' : '',
   showCopyId && showCopyId !== msg._id ? 'blur' : ''
 ]">
-                    <div class="drpDown" *ngIf="msg.senderId == userId" [class.active]="showCopyId === msg._id">
+
+                    <div class="drpDown active" [class.active]="showCopyId === msg._id">
                         <ul>
-                            <li (click)="editMessage(msg._id, msg.text)"><i class="bi bi-pencil"></i> Edit</li>
-                            <li (click)="copyMessage(msg.text, $event)"><i class="bi bi-clipboard2" ></i> Copy</li>
-                            <li (click)="deleteMessageById(msg._id)"><i class="bi bi-trash"></i> Delete</li>
+                            <li (click)="replyMessage(msg, $event)"><i class="bi bi-reply"></i></li>
+                            <li *ngIf="msg.senderId == userId" (click)="editMessage(msg._id, msg.text)"><i
+                                    class="bi bi-pencil"></i></li>
+                            <li (click)="copyMessage(msg.text, $event)"><i class="bi bi-clipboard2"></i></li>
+                            <li *ngIf="msg.senderId == userId" (click)="deleteMessageById(msg._id)"><i
+                                    class="bi bi-trash"></i></li>
                         </ul>
-                    </div> 
-                    <span (click)="msg.senderId == userId &&  clickMessage(msg._id, $event)"> {{msg.text}}
+                    </div>
+                    <span (click)="clickMessage(msg._id, $event)">
+
+                        <div class="replied-message" *ngIf="msg.replyTo"
+                            (click)="scrollToMessage(msg.replyTo._id, $event)">
+                            <div class="replied-message-name">
+                                {{ msg.replyTo.senderId === userId ? 'You' : receiverUserName }}
+                            </div>
+
+                            <div class="replied-message-text">
+                                {{ msg.replyTo.text }}
+                            </div>
+                        </div>
+
+                        {{msg.text}}
+
                         <b>{{msg.createdAt | date:'h:mm a'}}
                             <p *ngIf="msg.isRead == false && msg.senderId == userId"><i class="bi bi-check2"></i></p>
                             <p *ngIf="msg.isRead == true && msg.senderId == userId"><i class="bi bi-check2-all"></i></p>
 
                         </b>
-                       
+
                     </span>
-                      <h6 *ngIf="msg.isEdited">Edited</h6> 
+                    <h6 *ngIf="msg.isEdited">Edited</h6>
                 </div>
 
+            </div>
+            <div class="reply-preview" *ngIf="replyingTo">
+                <div class="reply-preview-content">
+
+                    <div class="reply-preview-title">
+                        Replying to
+                    </div>
+
+                    <div class="reply-preview-text">
+                        {{ replyingTo.text }}
+                    </div>
+                </div>
+                <button type="button" (click)="cancelReply($event)">
+                    <i class="bi bi-x-lg"></i>
+                </button>
             </div>
             <div class="text" (click)="focusMessage($event)">
                 <textarea type="text" placeholder="Type a message..." #messageInput (focus)="isMessageFocused = true"
                     (blur)="isMessageFocused = false" (input)="autoResize($event)" [(ngModel)]="text"></textarea>
-                <button (click)="sendMessage()"><i class="bi"  [ngClass]="editingMessageId ? 'bi-check-lg' : 'bi-send'" ></i></button>
+                <button (click)="sendMessage()" [disabled]="!text?.trim()"><i class="bi"
+                        [ngClass]="editingMessageId ? 'bi-check-lg' : 'bi-send'"></i></button>
             </div>
         </div>
     </div>

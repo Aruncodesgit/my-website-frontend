@@ -15,7 +15,7 @@ section {
   overflow: hidden;
 
   background-color: #000;
-  background-image:  url("../../../assets/images/chat_bg.jpg");
+  background-image: url("../../../assets/images/chat_bg.jpg");
 
   background-size: cover;
   background-position: center;
@@ -195,6 +195,10 @@ section .messages {
   padding-bottom: 10px;
 }
 
+.messages.descrease {
+  top: 320px !important;
+}
+
 section .messages .sent.blur:not(.notBlur),
 section .messages .received.blur:not(.notBlur) {
   filter: blur(5px);
@@ -206,7 +210,7 @@ section .messages .received.blur:not(.notBlur) {
 ========================================= */
 
 section .messages .sent {
-  width: 100%; 
+  width: 100%;
 
   margin: 10px 0 20px 0px;
   position: relative;
@@ -215,17 +219,19 @@ section .messages .sent {
 
   color: #fff;
 }
+
 section .sent h6 {
   position: absolute;
-    bottom: -21px;
-    font-size: 9px;
-    color: #9c9c9c;
-    letter-spacing: 0.7px;
+  bottom: -21px;
+  font-size: 9px;
+  color: #9c9c9c;
+  letter-spacing: 0.7px;
 }
+
 section .messages .sent span {
   max-width: 80%;
 
-  background-color: #1ba6bc;
+  background-color: #303747;
 
   padding: 2px 10px;
 
@@ -258,9 +264,13 @@ section .messages .sent span b p {
   margin: 0 0 0 5px;
 }
 
+section .messages .sent span b .bi-check2 {
+  font-size: 14px;
+}
+
 section .messages .sent span b .bi-check2-all {
-  font-size: 12px;
-  color: #0a1020;
+  font-size: 14px;
+  color: #23f610;
 }
 
 
@@ -280,17 +290,19 @@ section .messages .received {
 
   color: #fff;
 }
+
 section .received h6 {
   position: absolute;
-    bottom: -21px;
-    font-size: 9px;
-    color: #9c9c9c;
-    letter-spacing: 0.7px;
+  bottom: -21px;
+  font-size: 9px;
+  color: #9c9c9c;
+  letter-spacing: 0.7px;
 }
+
 section .messages .received span {
   max-width: 80%;
 
-  background-color: #303747;
+  background-color: #1ba6bc;
 
   padding: 2px 10px;
 
@@ -361,9 +373,8 @@ section .messages .drpDown ul {
 
 section .messages .drpDown ul li {
   padding: 0 10px;
-border-right: 1px solid #5c5c5c;
-  cursor: pointer;
-  font-size: 12px;
+  border-right: 1px solid #5c5c5c;
+  cursor: pointer; 
 }
 
 section .messages .drpDown ul li:last-child {
@@ -371,9 +382,11 @@ section .messages .drpDown ul li:last-child {
 }
 
 section .messages .drpDown ul li i {
-  font-size: 10px;
+  font-size: 14px;
 }
-
+section .messages .drpDown ul li:first-child i {
+  font-size: 17px;
+}
 
 /* =========================================
    MESSAGE INPUT
@@ -435,7 +448,7 @@ section .text button {
   border: none;
   border-radius: 8px;
 
-     background: linear-gradient(135deg, #0a7a1d, #14d743);
+  background: linear-gradient(135deg, #0a7a1d, #14d743);
 
   color: #fff;
 
@@ -528,5 +541,108 @@ section.keyboard-open .messages {
 
   section .text textarea {
     width: calc(100% - 72px);
+  }
+}
+
+.received .replied-message {
+  border-left: 3px solid #303747;
+  background: rgba(48, 55, 71, 0.6);
+}
+
+.received .replied-message-name {
+  color: #fff !important;
+}
+
+.reply-preview {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 8px 12px;
+  margin-bottom: 6px;
+
+  border-left: 3px solid #00c896;
+
+  background: rgba(0, 200, 150, 0.08);
+  border-radius: 8px;
+  position: absolute;
+  left: 5%;
+  bottom: 70px;
+  width: 90%;
+}
+
+.reply-preview-content {
+  min-width: 0;
+}
+
+.reply-preview-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: #00c896;
+}
+
+.reply-preview-text {
+  margin-top: 2px;
+  font-size: 13px;
+  color: #b9c4c1;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.reply-preview button {
+  border: none;
+  background: transparent;
+  color: #aaa;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.replied-message {
+  margin: 7px 0px;
+  padding: 6px 8px;
+
+  border-left: 3px solid #09a344;
+  background: rgba(255, 255, 255, 0.8);
+
+  border-radius: 6px;
+
+  cursor: pointer;
+  max-width: 100%;
+}
+
+.replied-message-name {
+  font-size: 11px;
+  font-weight: 600;
+  color: #09a344;
+}
+
+.replied-message-text {
+  margin-top: 2px;
+
+  font-size: 12px;
+  color: #000;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.reply-highlight {
+  animation: replyHighlight 1.2s ease;
+}
+
+@keyframes replyHighlight {
+  0% {
+    transform: scale(1.02);
+  }
+
+  50% {
+    transform: scale(1.02);
+  }
+
+  100% {
+    transform: scale(1);
   }
 }
