@@ -5,8 +5,8 @@
 export const environment = {
   production: false,
   apiBaseUrl: 'http://localhost:3000/api',
-  apiProdUrl: 'http://localhost:3000/api',
-  //apiProdUrl: 'https://my-website-backend-omega.vercel.app/api'
+  //apiProdUrl: 'http://localhost:3000/api',
+  apiProdUrl: 'https://my-website-backend-omega.vercel.app/api'
 };
 
 /*
