@@ -50,7 +50,8 @@ export class Login implements OnInit {
     this.common.login(this.loginForm.value).subscribe({
 
       next: async (response: any) => {
-
+         this.isLoaderVisible = false;
+          this.router.navigate(['/dashboard']);
         console.log(
           'Login successful:',
           response
@@ -77,8 +78,7 @@ export class Login implements OnInit {
         sessionStorage.setItem(
           'userName',
           response.user.name
-        );
-        this.router.navigate(['/dashboard']);
+        ); 
         
         console.log(response.user.notificationsEnabled)
        if (response.user.notificationsEnabled) {

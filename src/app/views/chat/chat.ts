@@ -545,17 +545,12 @@ export class Chat implements OnInit, OnDestroy {
     this.isLoaderVisible = true;
     this.common.deleteAllMessages().subscribe(
       (response: any) => {
-        setTimeout(() => {
-          this.isLoaderVisible = false;
-        }, 1000);
+        this.isLoaderVisible = false;
         this.messageData = [];
         this.cdr.detectChanges();
       },
       (error: any) => {
-        setTimeout(() => {
-          this.isLoaderVisible = false;
-        }, 1000);
-        console.error('Failed to delete all messages:', error);
+        this.isLoaderVisible = false; 
       }
     );
   }
