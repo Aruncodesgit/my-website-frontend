@@ -73,13 +73,17 @@ export class Login implements OnInit {
           'userName',
           response.user.name
         );
-
-
-        // REGISTER THIS BROWSER FOR PUSH
-        await this.pushService.enablePush();
-
-
         this.router.navigate(['/dashboard']);
+        
+
+       if (response.user.notificationsEnabled) {
+        this.pushService.enablePush().catch(error => {
+          console.error('Push registration failed:', error);
+        });
+      }
+
+
+        
 
       },
 

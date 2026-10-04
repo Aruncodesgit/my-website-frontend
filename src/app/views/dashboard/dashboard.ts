@@ -26,7 +26,7 @@ export class Dashboard implements OnInit, OnDestroy {
   onlineSubscription!: Subscription;
   heartbeatSubscription!: Subscription;
   activityData: any;
-  accessChat: boolean = true;
+  accessChat: boolean = false;
   showDrawer = false;
   notificationsEnabled = false;
 

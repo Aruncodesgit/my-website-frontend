@@ -36,7 +36,7 @@ export class Chat implements OnInit, OnDestroy {
   isMessageFocused = false;
   editingMessageId: any
   heartbeatSubscription!: Subscription;
-  accessChat: boolean = true;
+  accessChat: boolean = false;
   currentYoutubeVideoId: any;
   @ViewChild('messagesContainer') messagesContainer!: ElementRef;
   isUserAtBottom = true;
@@ -139,20 +139,40 @@ export class Chat implements OnInit, OnDestroy {
 
   startMessagePolling() {
 
-    this.messageSubscription = timer(0, 1000)
+    this.messageSubscription = timer(0, 500)
       .pipe(
         exhaustMap(() => this.common.getMessages())
       )
       .subscribe({
+
         next: (response: any) => {
 
-          this.messageData = response.data;
-           if (this.isInitialMessageLoad) {
-          this.isInitialMessageLoad = false;
-          this.scrollToBottom(true);
-        } else {
-          this.scrollToBottom();
-        }
+          const newMessages = response.data || [];
+
+          // Get the last message currently displayed
+          const oldLastId =
+            this.messageData.length > 0
+              ? this.messageData[this.messageData.length - 1]._id
+              : null;
+
+          // Get the last message from server
+          const newLastId =
+            newMessages.length > 0
+              ? newMessages[newMessages.length - 1]._id
+              : null;
+
+          // Check whether a new message was actually added
+          const hasNewMessage = oldLastId !== newLastId;
+
+          // Update your message arrays 
+          this.messageData = newMessages;
+
+          // Only scroll when there is a NEW message
+          if (hasNewMessage) {
+            this.scrollToBottom();
+          }
+
+          // Check unread messages
           const hasUnreadMessage = this.messageData.some(
             (msg: any) =>
               msg.receiverId === this.userId &&
@@ -162,50 +182,45 @@ export class Chat implements OnInit, OnDestroy {
           if (hasUnreadMessage) {
             this.markMessagesAsRead();
           }
-          this.cdr.detectChanges();
 
+          this.cdr.detectChanges();
         },
+
         error: (error) => {
-          console.error('Failed to fetch messages:', error);
+          console.error(
+            'Failed to fetch messages:',
+            error
+          );
         }
+
       });
   }
 
   onMessagesScroll(): void {
 
-  if (!this.messagesContainer) {
-    return;
+    if (!this.messagesContainer) return;
+
+    const element = this.messagesContainer.nativeElement;
+
+    const distanceFromBottom =
+      element.scrollHeight -
+      element.scrollTop -
+      element.clientHeight;
+
+    this.isUserAtBottom = distanceFromBottom <= 50;
   }
-
-  const element = this.messagesContainer.nativeElement;
-
-  const distanceFromBottom =
-    element.scrollHeight -
-    element.scrollTop -
-    element.clientHeight;
-
-  this.isUserAtBottom = distanceFromBottom <= 50;
-}
 
   scrollToBottom(force: boolean = false): void {
     setTimeout(() => {
-      if (!this.messagesContainer) {
-        return;
-      }
+      if (!this.messagesContainer) return;
 
-      // Don't force scrolling if user has manually moved up
       if (!force && !this.isUserAtBottom) {
         return;
       }
 
       const element = this.messagesContainer.nativeElement;
 
-      element.scrollTo({
-        top: element.scrollHeight,
-        behavior: 'smooth'
-      });
-
-      this.isUserAtBottom = true;
+      element.scrollTop = element.scrollHeight;
     }, 0);
   }
 
@@ -220,7 +235,7 @@ export class Chat implements OnInit, OnDestroy {
     this.isMessageFocused = true;
   }
 
-  sendMessage() { 
+  sendMessage() {
     if (this.editingMessageId) {
       this.common.editMessage(this.editingMessageId, this.text).subscribe(res => {
         if (res) {
@@ -235,33 +250,33 @@ export class Chat implements OnInit, OnDestroy {
         })
     }
     else {
-       this.common.sendMessage({
+      this.common.sendMessage({
         conversationId: this.conversationId,
         receiverId: this.receiverId,
         text: this.text.trim(),
         replyTo: this.replyingTo?._id || null
-    }).subscribe({
+      }).subscribe({
 
         next: (response: any) => {
 
-            console.log('Message sent successfully:', response);
+          console.log('Message sent successfully:', response);
 
-            this.text = '';
-            this.replyingTo = null;
-            this.isMessageFocused = false;
+          this.text = '';
+          this.replyingTo = null;
+          this.isMessageFocused = false;
 
-            setTimeout(() => {
-                this.messageInput.nativeElement.style.height = '52px';
-            });
+          setTimeout(() => {
+            this.messageInput.nativeElement.style.height = '52px';
+          });
 
-            this.cdr.detectChanges();
+          this.cdr.detectChanges();
         },
 
         error: (error: any) => {
-            console.error('Failed to send message:', error);
+          console.error('Failed to send message:', error);
         }
 
-    });
+      });
     }
 
   }
@@ -271,23 +286,23 @@ export class Chat implements OnInit, OnDestroy {
     event.stopPropagation();
 
     const element = document.getElementById(
-        'message-' + messageId
+      'message-' + messageId
     );
 
     if (element) {
 
-        element.scrollIntoView({
-            behavior: 'smooth',
-            block: 'center'
-        });
+      element.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center'
+      });
 
-        element.classList.add('reply-highlight');
+      element.classList.add('reply-highlight');
 
-        setTimeout(() => {
-            element.classList.remove('reply-highlight');
-        }, 1200);
+      setTimeout(() => {
+        element.classList.remove('reply-highlight');
+      }, 1200);
     }
-}
+  }
 
 
   goDashboard() {
@@ -400,16 +415,16 @@ export class Chat implements OnInit, OnDestroy {
     this.showCopyId = null;
 
     setTimeout(() => {
-        this.messageInput.nativeElement.focus();
-        this.isMessageFocused = true;
+      this.messageInput.nativeElement.focus();
+      this.isMessageFocused = true;
     });
-}
-cancelReply(event?: MouseEvent) {
+  }
+  cancelReply(event?: MouseEvent) {
 
     event?.stopPropagation();
 
     this.replyingTo = null;
-}
+  }
 
   editMessage(id: string, text: any) {
     this.editingMessageId = id

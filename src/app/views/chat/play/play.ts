@@ -77,67 +77,29 @@ export class Play implements OnInit, OnDestroy {
     };
   }
 
- getYoutubeCurrentPlay() {
+  getYoutubeCurrentPlay(): void {
 
-  // First check immediately
-  this.common.getCurrentPlaying().subscribe({
-
-    next: (response: any) => {
-
-      if (
-        !response.success ||
-        !response.data
-      ) {
-        return;
-      }
-
-      this.handleCurrentYoutubePlay(
-        response.data
-      );
-
-      // Video exists → start 1 second polling
-      this.startYoutubePolling();
-    },
-
-    error: (error) => {
-
-      console.error(
-        'Current playing error:',
-        error
-      );
-
-    }
-
-  });
-}
-
-startYoutubePolling() {
-
-  if (this.youtubeSubscription) {
-    return;
-  }
-
-  this.youtubeSubscription = timer(1000, 1000)
-    .pipe(
-      switchMap(() =>
-        this.common.getCurrentPlaying()
-      )
-    )
-    .subscribe({
+    this.common.getCurrentPlaying().subscribe({
 
       next: (response: any) => {
 
-        if (
-          !response.success ||
-          !response.data
-        ) {
+        // Nothing is currently playing
+        if (!response?.success || !response?.data) {
+
+          console.log('No current YouTube video');
+
+          this.stopYoutubePolling();
+
           return;
         }
 
+        // We have an active YouTube video
         this.handleCurrentYoutubePlay(
           response.data
         );
 
+        // Start polling only when video exists
+        this.startYoutubePolling();
       },
 
       error: (error) => {
@@ -150,106 +112,175 @@ startYoutubePolling() {
       }
 
     });
-}
-
-handleCurrentYoutubePlay(data: any) {
-
-  const url =
-    data.youtubeLinkId?.link;
-
-  if (!url) {
-    return;
   }
 
-  const videoId =
-    this.extractYoutubeVideoId(url);
+  startYoutubePolling(): void {
 
-  if (!videoId) {
-    return;
+    // Already polling
+    if (this.youtubeSubscription) {
+      return;
+    }
+
+    console.log('Starting YouTube polling');
+
+    this.youtubeSubscription = timer(0, 1000)
+      .pipe(
+        switchMap(() =>
+          this.common.getCurrentPlaying()
+        )
+      )
+      .subscribe({
+
+        next: (response: any) => {
+
+          // IMPORTANT:
+          // No active video anymore
+          if (
+            !response?.success ||
+            !response?.data
+          ) {
+
+            console.log(
+              'No current YouTube video - stopping polling'
+            );
+
+            this.stopYoutubePolling();
+
+            return;
+          }
+
+          // Video still exists
+          this.handleCurrentYoutubePlay(
+            response.data
+          );
+        },
+
+        error: (error) => {
+
+          console.error(
+            'Current playing error:',
+            error
+          );
+
+        }
+
+      });
   }
 
-  // New video
-  if (
-    videoId !== this.currentYoutubeVideoId
+
+
+  stopYoutubePolling(): void {
+
+    if (this.youtubeSubscription) {
+
+      console.log(
+        'Stopping YouTube polling'
+      );
+
+      this.youtubeSubscription.unsubscribe();
+
+      this.youtubeSubscription = undefined as any;
+    }
+  }
+
+  handleCurrentYoutubePlay(data: any) {
+
+    const url =
+      data.youtubeLinkId?.link;
+
+    if (!url) {
+      return;
+    }
+
+    const videoId =
+      this.extractYoutubeVideoId(url);
+
+    if (!videoId) {
+      return;
+    }
+
+    // New video
+    if (
+      videoId !== this.currentYoutubeVideoId
+    ) {
+
+      this.handleNewYoutubeVideo(
+        videoId,
+        url
+      );
+
+      return;
+    }
+
+    // Same video → check remote play/pause
+    this.handleRemotePlayback(data);
+  }
+
+  handleNewYoutubeVideo(
+    videoId: string,
+    url: string
   ) {
 
-    this.handleNewYoutubeVideo(
-      videoId,
-      url
+    console.log(
+      'New YouTube video:',
+      videoId
     );
 
-    return;
-  }
+    this.currentYoutubeUrl = url;
 
-  // Same video → check remote play/pause
-  this.handleRemotePlayback(data);
-}
+    this.currentYoutubeVideoId =
+      videoId;
 
-handleNewYoutubeVideo(
-  videoId: string,
-  url: string
-) {
-
-  console.log(
-    'New YouTube video:',
-    videoId
-  );
-
-  this.currentYoutubeUrl = url;
-
-  this.currentYoutubeVideoId =
-    videoId;
-
-  this.currentYoutubeVideoIdChange.emit(
-    this.currentYoutubeVideoId
-  );
-
-  this.youtubePlayer = null;
-
-  this.youtubePlayerReady = false;
-
-  this.cdr.detectChanges();
-
-  this.waitForYoutubeContainer();
-}
-
-handleRemotePlayback(data: any) {
-
-  if (!this.youtubePlayerReady) {
-    return;
-  }
-
-  const currentUserId =
-    String(
-      sessionStorage.getItem('userId')
+    this.currentYoutubeVideoIdChange.emit(
+      this.currentYoutubeVideoId
     );
 
-  const updatedBy =
-    String(
-      data.updatedBy?._id ||
-      data.updatedBy ||
-      ''
-    );
+    this.youtubePlayer = null;
 
-  // Ignore my own update
-  if (
-    currentUserId === updatedBy
-  ) {
-    return;
+    this.youtubePlayerReady = false;
+
+    this.cdr.detectChanges();
+
+    this.waitForYoutubeContainer();
   }
 
-  console.log(
-    'REMOTE ACTION:',
-    data.isPlaying
-      ? 'PLAY'
-      : 'PAUSE'
-  );
+  handleRemotePlayback(data: any) {
 
-  this.syncRemotePlayback(
-    data.isPlaying,
-    data.currentTime
-  );
-}
+    if (!this.youtubePlayerReady) {
+      return;
+    }
+
+    const currentUserId =
+      String(
+        sessionStorage.getItem('userId')
+      );
+
+    const updatedBy =
+      String(
+        data.updatedBy?._id ||
+        data.updatedBy ||
+        ''
+      );
+
+    // Ignore my own update
+    if (
+      currentUserId === updatedBy
+    ) {
+      return;
+    }
+
+    console.log(
+      'REMOTE ACTION:',
+      data.isPlaying
+        ? 'PLAY'
+        : 'PAUSE'
+    );
+
+    this.syncRemotePlayback(
+      data.isPlaying,
+      data.currentTime
+    );
+  }
 
 
   testPlay() {
@@ -297,42 +328,37 @@ handleRemotePlayback(data: any) {
     }
   }
 
- deleteCurrentPlay() {
+  deleteCurrentPlay(): void {
 
-  this.common.deleteCurrentPlay().subscribe({
+    this.common.deleteCurrentPlay().subscribe({
 
-    next: (response: any) => {
+      next: (response: any) => {
 
-      this.youtubePlayerReady = false;
+        this.youtubePlayerReady = false;
 
-      this.currentYoutubeVideoId = '';
+        this.currentYoutubeVideoId = '';
 
-      this.currentYoutubeUrl = '';
+        this.currentYoutubeUrl = '';
 
-      this.currentYoutubeVideoIdChange.emit(
-        null
-      );
+        this.currentYoutubeVideoIdChange.emit(null);
 
-      this.youtubeSubscription?.unsubscribe();
+        // Stop API polling
+        this.stopYoutubePolling();
 
-      this.youtubeSubscription = undefined as any;
+        this.cdr.detectChanges();
+      },
 
-      this.cdr.detectChanges();
+      error: (error) => {
 
-    },
+        console.error(
+          'Delete current play error:',
+          error
+        );
 
-    error: (error) => {
+      }
 
-      console.error(
-        'Delete current play error:',
-        error
-      );
-
-    }
-
-  });
-}
-
+    });
+  }
   waitForYoutubeContainer() {
 
     if (!this.youtubeApiReady) {
@@ -770,7 +796,8 @@ handleRemotePlayback(data: any) {
 
 
   ngOnDestroy(): void {
-    this.youtubeSubscription?.unsubscribe();
+    this.stopYoutubePolling();
+
     if (this.youtubePlayer) {
 
       try {
@@ -778,6 +805,7 @@ handleRemotePlayback(data: any) {
       } catch (error) {
         console.log(error);
       }
+
     }
   }
 }
