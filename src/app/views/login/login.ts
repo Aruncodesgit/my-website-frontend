@@ -70,6 +70,11 @@ export class Login implements OnInit {
         );
 
         sessionStorage.setItem(
+          'chatUserId',
+          response.user.chatUserId
+        );
+
+        sessionStorage.setItem(
           'userName',
           response.user.name
         );

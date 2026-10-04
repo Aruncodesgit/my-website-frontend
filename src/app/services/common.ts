@@ -353,6 +353,7 @@ export class Common {
   clearStorage() {
     sessionStorage.removeItem('token');
     sessionStorage.removeItem('userId');
+    sessionStorage.removeItem('chatUserId');
     sessionStorage.removeItem('userName');
   }
 

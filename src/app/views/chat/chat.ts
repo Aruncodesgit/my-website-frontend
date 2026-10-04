@@ -45,6 +45,7 @@ export class Chat implements OnInit, OnDestroy {
   private lastMessageId: string | null = null;
   replyingTo: any = null;
   private initialViewportHeight = window.visualViewport?.height || window.innerHeight;
+  private pendingMessageIds = new Set<string>();
   constructor(private breakpointObserver: BreakpointObserver, public common: Common, private router: Router, private cdr: ChangeDetectorRef) {
     this.breakpointObserver
       .observe(['(max-width: 767px)'])
@@ -57,6 +58,7 @@ export class Chat implements OnInit, OnDestroy {
   ngOnInit() {
 
     this.userId = sessionStorage.getItem('userId');
+     this.receiverId = sessionStorage.getItem('chatUserId');
     this.userName = sessionStorage.getItem('userName');
     // const youtubeUrl = sessionStorage.getItem('videoURL');
     // if (youtubeUrl) {
@@ -75,6 +77,7 @@ export class Chat implements OnInit, OnDestroy {
       );
     }
 
+    this.startGettingOnlinePolling();
     this.getConversations()
     this.startHeartbeat();
 
@@ -106,9 +109,7 @@ export class Chat implements OnInit, OnDestroy {
         this.conversationId = response.data[0]._id;
         var receiverID = response.data[0].participants
         receiverID = receiverID.filter((id: any) => id !== this.userId);
-        this.receiverId = receiverID[0];
-
-        this.startGettingOnlinePolling();
+        this.receiverId = receiverID[0]; 
         this.startMessagePolling();
         this.markMessagesAsRead();
       },
@@ -149,57 +150,103 @@ export class Chat implements OnInit, OnDestroy {
       });
   }
 
+
   startMessagePolling(): void {
-    this.messageSubscription = timer(0, 500)
+
+    this.messageSubscription = timer(0, 200)
       .pipe(
         exhaustMap(() => this.common.getMessages())
       )
       .subscribe({
+
         next: (response: any) => {
 
-          const newMessages: any[] =
-            Array.isArray(response?.data) ? response.data : [];
+          const serverMessages: any[] =
+            Array.isArray(response?.data)
+              ? response.data
+              : [];
 
-          const oldMessages: any[] =
-            Array.isArray(this.messageData) ? this.messageData : [];
+          const localMessages: any[] =
+            Array.isArray(this.messageData)
+              ? this.messageData
+              : [];
 
-          const oldLastId =
-            oldMessages.length > 0
-              ? oldMessages[oldMessages.length - 1]?._id ?? null
-              : null;
+          // Keep temporary messages that are
+          // not yet represented by server data
+          const temporaryMessages =
+            localMessages.filter(
+              (msg: any) =>
+                msg?.isTemp === true
+            );
 
-          const newLastId =
-            newMessages.length > 0
-              ? newMessages[newMessages.length - 1]?._id ?? null
-              : null;
+          // --------------------------------
+          // SERVER DATA
+          // --------------------------------
 
-          const hasNewMessage = oldLastId !== newLastId;
+          const serverMessageTexts =
+            new Set(
+              serverMessages.map(
+                (msg: any) =>
+                  `${msg.senderId}_${msg.text}_${msg.createdAt}`
+              )
+            );
 
-          this.messageData = newMessages;
+          // Keep only temp messages that
+          // haven't appeared from backend yet
+          const pendingTemporary =
+            temporaryMessages.filter(
+              (temp: any) => {
 
-          // New message received
-          if (hasNewMessage && newMessages.length > 0) {
-            this.scrollToBottom();
-          }
+                return !serverMessages.some(
+                  (server: any) =>
+                    server.senderId === temp.senderId &&
+                    server.text === temp.text
+                );
 
-          const hasUnreadMessage = this.messageData.some(
-            (msg: any) =>
-              msg?.receiverId === this.userId &&
-              msg?.isRead === false
-          );
+              }
+            );
+
+          // --------------------------------
+          // UPDATE
+          // --------------------------------
+
+          this.messageData = [
+            ...serverMessages,
+            ...pendingTemporary
+          ];
+
+          // --------------------------------
+          // READ
+          // --------------------------------
+
+          const hasUnreadMessage =
+            serverMessages.some(
+              (msg: any) =>
+                msg?.receiverId === this.userId &&
+                msg?.isRead === false
+            );
 
           if (hasUnreadMessage) {
             this.markMessagesAsRead();
           }
 
           this.cdr.detectChanges();
+
         },
 
         error: (error: any) => {
-          console.error('Failed to fetch messages:', error);
+
+          console.error(
+            'Message polling error:',
+            error
+          );
+
         }
+
       });
+
   }
+
 
   onMessagesScroll(): void {
 
@@ -276,68 +323,161 @@ export class Chat implements OnInit, OnDestroy {
   }
 
   sendMessage() {
+
     if (this.editingMessageId) {
 
-      this.common.editMessage(this.editingMessageId, this.text).subscribe(
-        (res: any) => {
-          if (res) {
-            this.editingMessageId = null;
-            this.text = '';
-            this.isMessageFocused = false;
-            this.cdr.detectChanges();
-          }
-        },
-        (error: any) => {
-          console.error('Failed to edit message:', error);
-        }
-      );
+      this.common.editMessage(
+        this.editingMessageId,
+        this.text
+      ).subscribe((res: any) => {
 
-    } else {
-
-      const messageText = this.text.trim();
-
-      if (!messageText) {
-        return;
-      }
-
-      this.common.sendMessage({
-        conversationId: this.conversationId,
-        receiverId: this.receiverId,
-        text: messageText,
-        replyTo: this.replyingTo?._id || null
-      }).subscribe({
-
-        next: (response: any) => {
-
-          console.log('Message sent successfully:', response);
-
-          // Immediately add sent message to UI
-          if (response?.data) {
-            this.messageData = [
-              ...(this.messageData || []),
-              response.data
-            ];
-          }
-
+        if (res) {
+          this.editingMessageId = null;
           this.text = '';
-          this.replyingTo = null;
           this.isMessageFocused = false;
-
           this.cdr.detectChanges();
-
-          // Scroll only once
-          setTimeout(() => {
-            this.messageInput.nativeElement.style.height = '52px';
-            this.scrollToBottom(true);
-          }, 50);
-        },
-
-        error: (error: any) => {
-          console.error('Failed to send message:', error);
         }
 
       });
+
+      return;
     }
+
+    const messageText = this.text?.trim();
+
+    if (!messageText) {
+      return;
+    }
+
+    const replyTo = this.replyingTo;
+
+    // Generate a local ID
+    const tempId = 'temp-' + Date.now();
+
+    // Create local message
+    const localMessage: any = {
+
+      _id: tempId,
+
+      conversationId: this.conversationId,
+
+      senderId: this.userId,
+
+      receiverId: this.receiverId,
+
+      text: messageText,
+
+      createdAt: new Date(),
+
+      isRead: false,
+
+      isEdited: false,
+
+      replyTo: replyTo || null,
+
+      isTemp: true
+    };
+
+    // --------------------------------
+    // SHOW IMMEDIATELY
+    // --------------------------------
+
+    this.messageData = [
+      ...this.messageData,
+      localMessage
+    ];
+
+    // Clear input immediately
+    this.text = '';
+    this.replyingTo = null;
+    this.isMessageFocused = false;
+
+    this.cdr.detectChanges();
+
+    // Scroll immediately
+    requestAnimationFrame(() => {
+
+      if (this.messagesContainer) {
+
+        const element =
+          this.messagesContainer.nativeElement;
+
+        element.scrollTop =
+          element.scrollHeight;
+      }
+
+    });
+
+    // --------------------------------
+    // SEND TO BACKEND
+    // --------------------------------
+
+    this.common.sendMessage({
+
+      conversationId: this.conversationId,
+
+      receiverId: this.receiverId,
+
+      text: messageText,
+
+      replyTo: replyTo?._id || null
+
+    }).subscribe({
+
+      next: (response: any) => {
+
+        const savedMessage = response?.data;
+
+        if (!savedMessage) {
+          return;
+        }
+
+        // --------------------------------
+        // REPLACE TEMP MESSAGE
+        // WITHOUT RELOADING WHOLE LIST
+        // --------------------------------
+
+        const index =
+          this.messageData.findIndex(
+            (msg: any) =>
+              msg._id === tempId
+          );
+
+        if (index !== -1) {
+
+          this.messageData[index] =
+            savedMessage;
+
+          // IMPORTANT:
+          // Don't replace the entire array.
+          // Don't scroll.
+          // Don't reload messages.
+
+          this.cdr.detectChanges();
+        }
+
+      },
+
+      error: (error: any) => {
+
+        console.error(
+          'Send message error:',
+          error
+        );
+
+        // Remove temporary message if API fails
+
+        this.messageData =
+          this.messageData.filter(
+            (msg: any) =>
+              msg._id !== tempId
+          );
+
+        this.cdr.detectChanges();
+      }
+
+    });
+
   }
 
   scrollToMessage(messageId: string, event: MouseEvent) {

@@ -40,9 +40,10 @@ export class Dashboard implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.userId = sessionStorage.getItem('userId');
+    this.receiverId = sessionStorage.getItem('chatUserId');
     this.userName = sessionStorage.getItem('userName');
 
-    this.getConversations()
+    this.startGettingOnlinePolling(); 
     this.startHeartbeat();
     this.getActivity()
     this.getNotificationSettings()
@@ -67,24 +68,7 @@ export class Dashboard implements OnInit, OnDestroy {
         }
       });
   }
-
-
-  getConversations() {
-
-    this.common.getConversations().subscribe(
-      (response: any) => {
-        this.conversationId = response.data[0]._id;
-        var receiverID = response.data[0].participants
-        receiverID = receiverID.filter((id: any) => id !== this.userId);
-        this.receiverId = receiverID[0];
-
-        this.startGettingOnlinePolling();
-      },
-      (error: any) => {
-        // console.error('Failed to fetch conversations:', error);
-      }
-    );
-  }
+ 
 
   startGettingOnlinePolling() {
 
