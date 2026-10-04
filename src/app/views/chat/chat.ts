@@ -151,14 +151,14 @@ export class Chat implements OnInit, OnDestroy {
 
           // Get the last message currently displayed
           const oldLastId =
-            this.messageData.length > 0
-              ? this.messageData[this.messageData.length - 1]._id
+            this.messageData?.length > 0
+              ? this.messageData[this.messageData?.length - 1]._id
               : null;
 
           // Get the last message from server
           const newLastId =
-            newMessages.length > 0
-              ? newMessages[newMessages.length - 1]._id
+            newMessages?.length > 0
+              ? newMessages[newMessages?.length - 1]._id
               : null;
 
           // Check whether a new message was actually added
