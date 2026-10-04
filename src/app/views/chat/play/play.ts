@@ -12,7 +12,7 @@ import { Subscription, switchMap, timer } from 'rxjs';
   styleUrl: './play.css',
   templateUrl: './play.html',
 })
-export class Play implements OnInit, OnDestroy {
+export class Play implements OnInit {
   isMobile: boolean = false;
   accessChat: boolean = true;
   currentYoutubeUrl: string = '';
@@ -39,773 +39,798 @@ export class Play implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.loadYoutubeApi();
-    this.getYoutubeCurrentPlay()
+   // this.loadYoutubeApi();
+    //this.getYoutubeCurrentPlay()
   }
 
 
-  loadYoutubeApi() {
+//   loadYoutubeApi() {
 
-    if (
-      (window as any).YT &&
-      (window as any).YT.Player
-    ) {
+//     if (
+//       (window as any).YT &&
+//       (window as any).YT.Player
+//     ) {
 
-      console.log('YouTube API already ready');
+//       console.log('YouTube API already ready');
 
-      this.youtubeApiReady = true;
+//       this.youtubeApiReady = true;
 
-      return;
-    }
+//       return;
+//     }
 
-    const script = document.createElement('script');
+//     const script = document.createElement('script');
 
-    script.src = 'https://www.youtube.com/iframe_api';
-    script.async = true;
+//     script.src = 'https://www.youtube.com/iframe_api';
+//     script.async = true;
 
-    document.body.appendChild(script);
+//     document.body.appendChild(script);
 
-    (window as any).onYouTubeIframeAPIReady = () => {
+//     (window as any).onYouTubeIframeAPIReady = () => {
 
-      console.log('YouTube IFrame API ready');
+//       console.log('YouTube IFrame API ready');
 
-      this.youtubeApiReady = true;
+//       this.youtubeApiReady = true;
 
-      // Do NOT create player here.
-      // getYoutubeCurrentPlay() will do it
-      // after the video is known.
-    };
-  }
+//       // Do NOT create player here.
+//       // getYoutubeCurrentPlay() will do it
+//       // after the video is known.
+//     };
+//   }
 
-  getYoutubeCurrentPlay(): void {
+//  getYoutubeCurrentPlay(): void {
 
-    this.common.getCurrentPlaying().subscribe({
+//   this.common.getCurrentPlaying().subscribe({
 
-      next: (response: any) => {
+//     next: (response: any) => {
 
-        // Nothing is currently playing
-        if (!response?.success || !response?.data) {
+//       const data = response?.success
+//         ? response?.data
+//         : null;
 
-          console.log('No current YouTube video');
+//       const hasVideo =
+//         !!data?.youtubeLinkId?.link;
 
-          this.stopYoutubePolling();
+//       // No video
+//       if (!hasVideo) {
 
-          return;
-        }
+//         console.log(
+//           'No current YouTube video'
+//         );
 
-        // We have an active YouTube video
-        this.handleCurrentYoutubePlay(
-          response.data
-        );
+//         this.stopYoutubePolling();
 
-        // Start polling only when video exists
-        this.startYoutubePolling();
-      },
+//         return;
+//       }
 
-      error: (error) => {
+//       // Valid video
+//       const isValidVideo =
+//         this.handleCurrentYoutubePlay(data);
 
-        console.error(
-          'Current playing error:',
-          error
-        );
+//       if (isValidVideo) {
+//         this.startYoutubePolling();
+//       } else {
+//         this.stopYoutubePolling();
+//       }
+//     },
 
-      }
+//     error: (error) => {
 
-    });
-  }
+//       console.error(
+//         'Current playing error:',
+//         error
+//       );
 
-  startYoutubePolling(): void {
+//       this.stopYoutubePolling();
+//     }
 
-    // Already polling
-    if (this.youtubeSubscription) {
-      return;
-    }
+//   });
+// }
 
-    console.log('Starting YouTube polling');
+//   startYoutubePolling(): void {
 
-    this.youtubeSubscription = timer(0, 1000)
-      .pipe(
-        switchMap(() =>
-          this.common.getCurrentPlaying()
-        )
-      )
-      .subscribe({
+//     // Already polling
+//     if (this.youtubeSubscription) {
+//       return;
+//     }
 
-        next: (response: any) => {
+//     console.log('Starting YouTube polling');
 
-          // IMPORTANT:
-          // No active video anymore
-          if (
-            !response?.success ||
-            !response?.data
-          ) {
+//     this.youtubeSubscription = timer(0, 1000)
+//       .pipe(
+//         switchMap(() =>
+//           this.common.getCurrentPlaying()
+//         )
+//       )
+//       .subscribe({
 
-            console.log(
-              'No current YouTube video - stopping polling'
-            );
+//         next: (response: any) => {
 
-            this.stopYoutubePolling();
+//           // IMPORTANT:
+//           // No active video anymore
+//           if (
+//             !response?.success ||
+//             !response?.data
+//           ) {
 
-            return;
-          }
+//             console.log(
+//               'No current YouTube video - stopping polling'
+//             );
 
-          // Video still exists
-          this.handleCurrentYoutubePlay(
-            response.data
-          );
-        },
+//             this.stopYoutubePolling();
 
-        error: (error) => {
+//             return;
+//           }
 
-          console.error(
-            'Current playing error:',
-            error
-          );
+//           // Video still exists
+//           this.handleCurrentYoutubePlay(
+//             response.data
+//           );
+//         },
 
-        }
+//         error: (error) => {
 
-      });
-  }
+//           console.error(
+//             'Current playing error:',
+//             error
+//           );
 
+//         }
 
+//       });
+//   }
 
-  stopYoutubePolling(): void {
 
-    if (this.youtubeSubscription) {
 
-      console.log(
-        'Stopping YouTube polling'
-      );
+//   stopYoutubePolling(): void {
 
-      this.youtubeSubscription.unsubscribe();
+//     if (this.youtubeSubscription) {
 
-      this.youtubeSubscription = undefined as any;
-    }
-  }
+//       console.log(
+//         'Stopping YouTube polling'
+//       );
 
-  handleCurrentYoutubePlay(data: any) {
+//       this.youtubeSubscription.unsubscribe();
 
-    const url =
-      data.youtubeLinkId?.link;
+//       this.youtubeSubscription = undefined as any;
+//     }
+//   }
 
-    if (!url) {
-      return;
-    }
+//  handleCurrentYoutubePlay(data: any): boolean {
 
-    const videoId =
-      this.extractYoutubeVideoId(url);
+//   const url = data?.youtubeLinkId?.link;
 
-    if (!videoId) {
-      return;
-    }
+//   // No YouTube video
+//   if (!url) {
 
-    // New video
-    if (
-      videoId !== this.currentYoutubeVideoId
-    ) {
+//     console.log('No YouTube video found');
 
-      this.handleNewYoutubeVideo(
-        videoId,
-        url
-      );
+//     this.currentYoutubeVideoId = '';
+//     this.currentYoutubeUrl = '';
+//     this.youtubePlayerReady = false;
 
-      return;
-    }
+//     this.currentYoutubeVideoIdChange.emit(null);
 
-    // Same video → check remote play/pause
-    this.handleRemotePlayback(data);
-  }
+//     return false;
+//   }
 
-  handleNewYoutubeVideo(
-    videoId: string,
-    url: string
-  ) {
+//   const videoId =
+//     this.extractYoutubeVideoId(url);
 
-    console.log(
-      'New YouTube video:',
-      videoId
-    );
+//   // Invalid YouTube URL
+//   if (!videoId) {
 
-    this.currentYoutubeUrl = url;
+//     console.log('Invalid YouTube video URL');
 
-    this.currentYoutubeVideoId =
-      videoId;
+//     return false;
+//   }
 
-    this.currentYoutubeVideoIdChange.emit(
-      this.currentYoutubeVideoId
-    );
+//   // New video
+//   if (videoId !== this.currentYoutubeVideoId) {
 
-    this.youtubePlayer = null;
+//     this.handleNewYoutubeVideo(
+//       videoId,
+//       url
+//     );
 
-    this.youtubePlayerReady = false;
+//     return true;
+//   }
 
-    this.cdr.detectChanges();
+//   // Same video → check remote play/pause
+//   this.handleRemotePlayback(data);
 
-    this.waitForYoutubeContainer();
-  }
+//   return true;
+// }
 
-  handleRemotePlayback(data: any) {
+//   handleNewYoutubeVideo(
+//     videoId: string,
+//     url: string
+//   ) {
 
-    if (!this.youtubePlayerReady) {
-      return;
-    }
+//     console.log(
+//       'New YouTube video:',
+//       videoId
+//     );
 
-    const currentUserId =
-      String(
-        sessionStorage.getItem('userId')
-      );
+//     this.currentYoutubeUrl = url;
 
-    const updatedBy =
-      String(
-        data.updatedBy?._id ||
-        data.updatedBy ||
-        ''
-      );
+//     this.currentYoutubeVideoId =
+//       videoId;
 
-    // Ignore my own update
-    if (
-      currentUserId === updatedBy
-    ) {
-      return;
-    }
+//     this.currentYoutubeVideoIdChange.emit(
+//       this.currentYoutubeVideoId
+//     );
 
-    console.log(
-      'REMOTE ACTION:',
-      data.isPlaying
-        ? 'PLAY'
-        : 'PAUSE'
-    );
+//     this.youtubePlayer = null;
 
-    this.syncRemotePlayback(
-      data.isPlaying,
-      data.currentTime
-    );
-  }
+//     this.youtubePlayerReady = false;
 
+//     this.cdr.detectChanges();
 
-  testPlay() {
+//     this.waitForYoutubeContainer();
+//   }
 
-    console.log(
-      'TEST PLAY',
-      this.youtubePlayer,
-      this.youtubePlayerReady
-    );
+//   handleRemotePlayback(data: any) {
 
-    if (
-      this.youtubePlayer &&
-      this.youtubePlayerReady &&
-      typeof this.youtubePlayer.playVideo === 'function'
-    ) {
+//     if (!this.youtubePlayerReady) {
+//       return;
+//     }
 
-      console.log('Calling playVideo()');
+//     const currentUserId =
+//       String(
+//         sessionStorage.getItem('userId')
+//       );
 
-      this.youtubePlayer.playVideo();
-    }
-    console.log(
-      'TEST PLAY',
-      this.youtubePlayer,
-      this.youtubePlayerReady
-    );
-  }
+//     const updatedBy =
+//       String(
+//         data.updatedBy?._id ||
+//         data.updatedBy ||
+//         ''
+//       );
 
+//     // Ignore my own update
+//     if (
+//       currentUserId === updatedBy
+//     ) {
+//       return;
+//     }
 
-  testPause() {
+//     console.log(
+//       'REMOTE ACTION:',
+//       data.isPlaying
+//         ? 'PLAY'
+//         : 'PAUSE'
+//     );
 
-    console.log(
-      'TEST PAUSE',
-      this.youtubePlayer,
-      this.youtubePlayerReady
-    );
+//     this.syncRemotePlayback(
+//       data.isPlaying,
+//       data.currentTime
+//     );
+//   }
 
-    if (
-      this.youtubePlayer &&
-      this.youtubePlayerReady &&
-      typeof this.youtubePlayer.pauseVideo === 'function'
-    ) {
-      console.log('Calling pauseVideo()');
 
-      this.youtubePlayer.pauseVideo();
-    }
-  }
+//   testPlay() {
 
-  deleteCurrentPlay(): void {
+//     console.log(
+//       'TEST PLAY',
+//       this.youtubePlayer,
+//       this.youtubePlayerReady
+//     );
 
-    this.common.deleteCurrentPlay().subscribe({
+//     if (
+//       this.youtubePlayer &&
+//       this.youtubePlayerReady &&
+//       typeof this.youtubePlayer.playVideo === 'function'
+//     ) {
 
-      next: (response: any) => {
+//       console.log('Calling playVideo()');
 
-        this.youtubePlayerReady = false;
+//       this.youtubePlayer.playVideo();
+//     }
+//     console.log(
+//       'TEST PLAY',
+//       this.youtubePlayer,
+//       this.youtubePlayerReady
+//     );
+//   }
 
-        this.currentYoutubeVideoId = '';
 
-        this.currentYoutubeUrl = '';
+//   testPause() {
 
-        this.currentYoutubeVideoIdChange.emit(null);
+//     console.log(
+//       'TEST PAUSE',
+//       this.youtubePlayer,
+//       this.youtubePlayerReady
+//     );
 
-        // Stop API polling
-        this.stopYoutubePolling();
+//     if (
+//       this.youtubePlayer &&
+//       this.youtubePlayerReady &&
+//       typeof this.youtubePlayer.pauseVideo === 'function'
+//     ) {
+//       console.log('Calling pauseVideo()');
 
-        this.cdr.detectChanges();
-      },
+//       this.youtubePlayer.pauseVideo();
+//     }
+//   }
 
-      error: (error) => {
+//   deleteCurrentPlay(): void {
 
-        console.error(
-          'Delete current play error:',
-          error
-        );
+//     this.common.deleteCurrentPlay().subscribe({
 
-      }
+//       next: (response: any) => {
 
-    });
-  }
-  waitForYoutubeContainer() {
+//         this.youtubePlayerReady = false;
 
-    if (!this.youtubeApiReady) {
+//         this.currentYoutubeVideoId = '';
 
-      console.log(
-        'Waiting for YouTube API...'
-      );
+//         this.currentYoutubeUrl = '';
 
-      setTimeout(() => {
-        this.waitForYoutubeContainer();
-      }, 300);
+//         this.currentYoutubeVideoIdChange.emit(null);
 
-      return;
-    }
+//         // Stop API polling
+//         this.stopYoutubePolling();
 
-    if (!this.youtubePlayerElement) {
+//         this.cdr.detectChanges();
+//       },
 
-      console.log(
-        'Waiting for YouTube container...'
-      );
+//       error: (error) => {
 
-      setTimeout(() => {
-        this.waitForYoutubeContainer();
-      }, 300);
+//         console.error(
+//           'Delete current play error:',
+//           error
+//         );
 
-      return;
-    }
+//       }
 
-    this.createYoutubePlayer();
-  }
+//     });
+//   }
+//   waitForYoutubeContainer() {
 
+//     if (!this.youtubeApiReady) {
 
-  extractYoutubeVideoId(url: string): string | null {
+//       console.log(
+//         'Waiting for YouTube API...'
+//       );
 
-    try {
+//       setTimeout(() => {
+//         this.waitForYoutubeContainer();
+//       }, 300);
 
-      const parsedUrl = new URL(url);
+//       return;
+//     }
 
-      // https://www.youtube.com/watch?v=XXXX
-      if (
-        parsedUrl.hostname === 'www.youtube.com' ||
-        parsedUrl.hostname === 'youtube.com' ||
-        parsedUrl.hostname === 'm.youtube.com'
-      ) {
+//     if (!this.youtubePlayerElement) {
 
-        const videoId = parsedUrl.searchParams.get('v');
+//       console.log(
+//         'Waiting for YouTube container...'
+//       );
 
-        if (videoId) {
-          return videoId;
-        }
+//       setTimeout(() => {
+//         this.waitForYoutubeContainer();
+//       }, 300);
 
-        // /shorts/XXXX
-        if (parsedUrl.pathname.startsWith('/shorts/')) {
-          return parsedUrl.pathname
-            .split('/shorts/')[1]
-            .split('/')[0];
-        }
+//       return;
+//     }
 
-        // /embed/XXXX
-        if (parsedUrl.pathname.startsWith('/embed/')) {
-          return parsedUrl.pathname
-            .split('/embed/')[1]
-            .split('/')[0];
-        }
-      }
+//     this.createYoutubePlayer();
+//   }
 
-      // https://youtu.be/XXXX
-      if (parsedUrl.hostname === 'youtu.be') {
-        return parsedUrl.pathname
-          .substring(1)
-          .split('/')[0];
-      }
 
-      return null;
+//   extractYoutubeVideoId(url: string): string | null {
 
-    } catch (error) {
+//     try {
 
-      console.error('YouTube URL parsing error:', error);
+//       const parsedUrl = new URL(url);
 
-      return null;
-    }
-  }
+//       // https://www.youtube.com/watch?v=XXXX
+//       if (
+//         parsedUrl.hostname === 'www.youtube.com' ||
+//         parsedUrl.hostname === 'youtube.com' ||
+//         parsedUrl.hostname === 'm.youtube.com'
+//       ) {
 
-  createYoutubePlayer() {
+//         const videoId = parsedUrl.searchParams.get('v');
 
-    console.log(
-      'Creating YouTube player:',
-      this.currentYoutubeVideoId
-    );
+//         if (videoId) {
+//           return videoId;
+//         }
 
-    if (!this.youtubePlayerElement) {
-      console.error('YouTube container not found');
-      return;
-    }
+//         // /shorts/XXXX
+//         if (parsedUrl.pathname.startsWith('/shorts/')) {
+//           return parsedUrl.pathname
+//             .split('/shorts/')[1]
+//             .split('/')[0];
+//         }
 
-    if (!this.youtubeApiReady) {
-      console.error('YouTube API not ready');
-      return;
-    }
+//         // /embed/XXXX
+//         if (parsedUrl.pathname.startsWith('/embed/')) {
+//           return parsedUrl.pathname
+//             .split('/embed/')[1]
+//             .split('/')[0];
+//         }
+//       }
 
-    const YT = (window as any).YT;
+//       // https://youtu.be/XXXX
+//       if (parsedUrl.hostname === 'youtu.be') {
+//         return parsedUrl.pathname
+//           .substring(1)
+//           .split('/')[0];
+//       }
 
-    if (!YT || !YT.Player) {
-      console.error('YT.Player not available');
-      return;
-    }
+//       return null;
 
-    if (this.youtubePlayer) {
-      console.log('Player already exists');
-      return;
-    }
+//     } catch (error) {
 
-    this.youtubePlayerReady = false;
+//       console.error('YouTube URL parsing error:', error);
 
-    this.youtubePlayer = new YT.Player(
-      this.youtubePlayerElement.nativeElement,
-      {
-        width: '100%',
-        height: '200',
+//       return null;
+//     }
+//   }
 
-        videoId: this.currentYoutubeVideoId,
+//   createYoutubePlayer() {
 
-        playerVars: {
-          autoplay: 0,
-          controls: 1,
-          playsinline: 1,
-          rel: 0,
-          enablejsapi: 1,
-          origin: window.location.origin
-        },
+//     console.log(
+//       'Creating YouTube player:',
+//       this.currentYoutubeVideoId
+//     );
 
-        events: {
+//     if (!this.youtubePlayerElement) {
+//       console.error('YouTube container not found');
+//       return;
+//     }
 
-          onReady: (event: any) => {
+//     if (!this.youtubeApiReady) {
+//       console.error('YouTube API not ready');
+//       return;
+//     }
 
-            console.log('YouTube player ready');
+//     const YT = (window as any).YT;
 
-            this.youtubePlayer = event.target;
+//     if (!YT || !YT.Player) {
+//       console.error('YT.Player not available');
+//       return;
+//     }
 
-            this.youtubePlayerReady = true;
+//     if (this.youtubePlayer) {
+//       console.log('Player already exists');
+//       return;
+//     }
 
-            console.log(
-              'Actual YT Player:',
-              this.youtubePlayer
-            );
-          },
+//     this.youtubePlayerReady = false;
 
-          onStateChange: (event: any) => {
+//     this.youtubePlayer = new YT.Player(
+//       this.youtubePlayerElement.nativeElement,
+//       {
+//         width: '100%',
+//         height: '200',
 
-            console.log(
-              'YouTube state:',
-              event.data
-            );
+//         videoId: this.currentYoutubeVideoId,
 
-            this.youtubeStateChanged(event);
-          },
+//         playerVars: {
+//           autoplay: 0,
+//           controls: 1,
+//           playsinline: 1,
+//           rel: 0,
+//           enablejsapi: 1,
+//           origin: window.location.origin
+//         },
 
-          onError: (event: any) => {
+//         events: {
 
-            console.error(
-              'YouTube player error:',
-              event.data
-            );
-          }
-        }
-      }
-    );
-  }
+//           onReady: (event: any) => {
 
-  youtubeStateChanged(event: any) {
+//             console.log('YouTube player ready');
 
-    if (!this.youtubePlayerReady) {
-      return;
-    }
+//             this.youtubePlayer = event.target;
 
-    // IMPORTANT:
-    // If this change came from the other user,
-    // don't send it back to MongoDB again.
-    if (this.isApplyingRemoteState) {
-      console.log('Ignoring remote state change');
-      return;
-    }
+//             this.youtubePlayerReady = true;
 
-    const YT = (window as any).YT;
+//             console.log(
+//               'Actual YT Player:',
+//               this.youtubePlayer
+//             );
+//           },
 
-    if (!YT || !YT.PlayerState) {
-      return;
-    }
+//           onStateChange: (event: any) => {
 
-    if (
-      !this.youtubePlayer ||
-      typeof this.youtubePlayer.getCurrentTime !== 'function'
-    ) {
-      return;
-    }
+//             console.log(
+//               'YouTube state:',
+//               event.data
+//             );
 
-    const currentTime =
-      this.youtubePlayer.getCurrentTime();
+//             this.youtubeStateChanged(event);
+//           },
 
-    console.log(
-      'YouTube state changed:',
-      event.data,
-      'time:',
-      currentTime
-    );
+//           onError: (event: any) => {
 
+//             console.error(
+//               'YouTube player error:',
+//               event.data
+//             );
+//           }
+//         }
+//       }
+//     );
+//   }
 
-    // ==========================================
-    // LOCAL PLAY
-    // ==========================================
+//   youtubeStateChanged(event: any) {
 
-    if (
-      event.data === YT.PlayerState.PLAYING
-    ) {
+//     if (!this.youtubePlayerReady) {
+//       return;
+//     }
 
-      console.log('LOCAL PLAY');
+//     // IMPORTANT:
+//     // If this change came from the other user,
+//     // don't send it back to MongoDB again.
+//     if (this.isApplyingRemoteState) {
+//       console.log('Ignoring remote state change');
+//       return;
+//     }
 
-      this.lastLocalActionTime = Date.now();
+//     const YT = (window as any).YT;
 
-      this.common.updatePlayback({
-        isPlaying: true,
-        currentTime: currentTime
-      }).subscribe({
+//     if (!YT || !YT.PlayerState) {
+//       return;
+//     }
 
-        next: (response: any) => {
+//     if (
+//       !this.youtubePlayer ||
+//       typeof this.youtubePlayer.getCurrentTime !== 'function'
+//     ) {
+//       return;
+//     }
 
-          console.log(
-            'Play state saved:',
-            response
-          );
+//     const currentTime =
+//       this.youtubePlayer.getCurrentTime();
 
-        },
+//     console.log(
+//       'YouTube state changed:',
+//       event.data,
+//       'time:',
+//       currentTime
+//     );
 
-        error: (error: any) => {
 
-          console.error(
-            'Play state error:',
-            error
-          );
+//     // ==========================================
+//     // LOCAL PLAY
+//     // ==========================================
 
-        }
+//     if (
+//       event.data === YT.PlayerState.PLAYING
+//     ) {
 
-      });
+//       console.log('LOCAL PLAY');
 
-    }
+//       this.lastLocalActionTime = Date.now();
 
+//       this.common.updatePlayback({
+//         isPlaying: true,
+//         currentTime: currentTime
+//       }).subscribe({
 
-    // ==========================================
-    // LOCAL PAUSE
-    // ==========================================
+//         next: (response: any) => {
 
-    else if (
-      event.data === YT.PlayerState.PAUSED
-    ) {
+//           console.log(
+//             'Play state saved:',
+//             response
+//           );
 
-      console.log('LOCAL PAUSE');
+//         },
 
-      this.lastLocalActionTime = Date.now();
+//         error: (error: any) => {
 
-      this.common.updatePlayback({
-        isPlaying: false,
-        currentTime: currentTime
-      }).subscribe({
+//           console.error(
+//             'Play state error:',
+//             error
+//           );
 
-        next: (response: any) => {
+//         }
 
-          console.log(
-            'Pause state saved:',
-            response
-          );
+//       });
 
-        },
+//     }
 
-        error: (error: any) => {
 
-          console.error(
-            'Pause state error:',
-            error
-          );
+//     // ==========================================
+//     // LOCAL PAUSE
+//     // ==========================================
 
-        }
+//     else if (
+//       event.data === YT.PlayerState.PAUSED
+//     ) {
 
-      });
+//       console.log('LOCAL PAUSE');
 
-    }
+//       this.lastLocalActionTime = Date.now();
 
+//       this.common.updatePlayback({
+//         isPlaying: false,
+//         currentTime: currentTime
+//       }).subscribe({
 
-    // ==========================================
-    // VIDEO ENDED
-    // ==========================================
+//         next: (response: any) => {
 
-    else if (
-      event.data === YT.PlayerState.ENDED
-    ) {
+//           console.log(
+//             'Pause state saved:',
+//             response
+//           );
 
-      console.log('LOCAL ENDED');
+//         },
 
-      this.lastLocalActionTime = Date.now();
+//         error: (error: any) => {
 
-      this.common.updatePlayback({
-        isPlaying: false,
-        currentTime: 0
-      }).subscribe({
+//           console.error(
+//             'Pause state error:',
+//             error
+//           );
 
-        next: (response: any) => {
+//         }
 
-          console.log(
-            'Ended state saved:',
-            response
-          );
+//       });
 
-        },
+//     }
 
-        error: (error: any) => {
 
-          console.error(
-            'Ended state error:',
-            error
-          );
+//     // ==========================================
+//     // VIDEO ENDED
+//     // ==========================================
 
-        }
+//     else if (
+//       event.data === YT.PlayerState.ENDED
+//     ) {
 
-      });
+//       console.log('LOCAL ENDED');
 
-    }
+//       this.lastLocalActionTime = Date.now();
 
-  }
+//       this.common.updatePlayback({
+//         isPlaying: false,
+//         currentTime: 0
+//       }).subscribe({
 
+//         next: (response: any) => {
 
-  syncRemotePlayback(
-    isPlaying: boolean,
-    currentTime: number
-  ) {
+//           console.log(
+//             'Ended state saved:',
+//             response
+//           );
 
-    const YT = (window as any).YT;
+//         },
 
-    if (
-      !YT ||
-      !YT.PlayerState ||
-      !this.youtubePlayer ||
-      !this.youtubePlayerReady
-    ) {
-      return;
-    }
+//         error: (error: any) => {
 
-    const playerState =
-      this.youtubePlayer.getPlayerState();
+//           console.error(
+//             'Ended state error:',
+//             error
+//           );
 
-    const playerTime =
-      this.youtubePlayer.getCurrentTime();
+//         }
 
+//       });
 
-    // ==========================================
-    // REMOTE PAUSE
-    // ==========================================
+//     }
 
-    if (!isPlaying) {
+//   }
 
-      // Only pause if currently playing
-      if (
-        playerState === YT.PlayerState.PLAYING
-      ) {
 
-        console.log(
-          'REMOTE PAUSE:',
-          currentTime
-        );
+//   syncRemotePlayback(
+//     isPlaying: boolean,
+//     currentTime: number
+//   ) {
 
-        this.isApplyingRemoteState = true;
+//     const YT = (window as any).YT;
 
-        this.youtubePlayer.pauseVideo();
+//     if (
+//       !YT ||
+//       !YT.PlayerState ||
+//       !this.youtubePlayer ||
+//       !this.youtubePlayerReady
+//     ) {
+//       return;
+//     }
 
-        // Don't seek every second
-        if (
-          Math.abs(playerTime - currentTime) > 2
-        ) {
+//     const playerState =
+//       this.youtubePlayer.getPlayerState();
 
-          this.youtubePlayer.seekTo(
-            currentTime,
-            true
-          );
+//     const playerTime =
+//       this.youtubePlayer.getCurrentTime();
 
-        }
 
-        setTimeout(() => {
-          this.isApplyingRemoteState = false;
-        }, 500);
-      }
+//     // ==========================================
+//     // REMOTE PAUSE
+//     // ==========================================
 
-      return;
-    }
+//     if (!isPlaying) {
 
+//       // Only pause if currently playing
+//       if (
+//         playerState === YT.PlayerState.PLAYING
+//       ) {
 
-    // ==========================================
-    // REMOTE PLAY
-    // ==========================================
+//         console.log(
+//           'REMOTE PAUSE:',
+//           currentTime
+//         );
 
-    if (isPlaying) {
+//         this.isApplyingRemoteState = true;
 
-      // Only start playing if currently NOT playing
-      if (
-        playerState !== YT.PlayerState.PLAYING
-      ) {
+//         this.youtubePlayer.pauseVideo();
 
-        console.log(
-          'REMOTE PLAY:',
-          currentTime
-        );
+//         // Don't seek every second
+//         if (
+//           Math.abs(playerTime - currentTime) > 2
+//         ) {
 
-        this.isApplyingRemoteState = true;
+//           this.youtubePlayer.seekTo(
+//             currentTime,
+//             true
+//           );
 
-        // Set position only when starting remote playback
-        if (
-          Math.abs(playerTime - currentTime) > 2
-        ) {
+//         }
 
-          this.youtubePlayer.seekTo(
-            currentTime,
-            true
-          );
+//         setTimeout(() => {
+//           this.isApplyingRemoteState = false;
+//         }, 500);
+//       }
 
-        }
+//       return;
+//     }
 
-        this.youtubePlayer.playVideo();
 
-        setTimeout(() => {
-          this.isApplyingRemoteState = false;
-        }, 700);
-      }
+//     // ==========================================
+//     // REMOTE PLAY
+//     // ==========================================
 
-      return;
-    }
+//     if (isPlaying) {
 
-  }
+//       // Only start playing if currently NOT playing
+//       if (
+//         playerState !== YT.PlayerState.PLAYING
+//       ) {
 
+//         console.log(
+//           'REMOTE PLAY:',
+//           currentTime
+//         );
 
-  ngOnDestroy(): void {
-    this.stopYoutubePolling();
+//         this.isApplyingRemoteState = true;
 
-    if (this.youtubePlayer) {
+//         // Set position only when starting remote playback
+//         if (
+//           Math.abs(playerTime - currentTime) > 2
+//         ) {
 
-      try {
-        this.youtubePlayer.destroy();
-      } catch (error) {
-        console.log(error);
-      }
+//           this.youtubePlayer.seekTo(
+//             currentTime,
+//             true
+//           );
 
-    }
-  }
+//         }
+
+//         this.youtubePlayer.playVideo();
+
+//         setTimeout(() => {
+//           this.isApplyingRemoteState = false;
+//         }, 700);
+//       }
+
+//       return;
+//     }
+
+//   }
+
+
+//   ngOnDestroy(): void {
+//     this.stopYoutubePolling();
+
+//     if (this.youtubePlayer) {
+
+//       try {
+//         this.youtubePlayer.destroy();
+//       } catch (error) {
+//         console.log(error);
+//       }
+
+//     }
+//   }
 }

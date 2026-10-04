@@ -7,10 +7,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { timer, Subscription } from 'rxjs';
 import { exhaustMap, switchMap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
-import { Play } from './play/play';
+//import { Play } from './play/play';
 const YT = (window as any).YT;
 @Component({
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, Play],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule],
   selector: 'app-chat',
   styleUrl: './chat.css',
   templateUrl: './chat.html',
