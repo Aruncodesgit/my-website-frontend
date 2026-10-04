@@ -637,9 +637,7 @@ section.keyboard-open .messages {
   margin-top: 2px;
 
   font-size: 12px;
-  color: #000;
-
-  white-space: nowrap;
+  color: #000; 
   overflow: hidden;
   text-overflow: ellipsis;
 }

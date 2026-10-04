@@ -46,6 +46,7 @@ export class Chat implements OnInit, OnDestroy {
   replyingTo: any = null;
   private initialViewportHeight = window.visualViewport?.height || window.innerHeight;
   private pendingMessageIds = new Set<string>();
+  private scrollInterval: any;
   constructor(private breakpointObserver: BreakpointObserver, public common: Common, private router: Router, private cdr: ChangeDetectorRef) {
     this.breakpointObserver
       .observe(['(max-width: 767px)'])
@@ -58,7 +59,7 @@ export class Chat implements OnInit, OnDestroy {
   ngOnInit() {
 
     this.userId = sessionStorage.getItem('userId');
-     this.receiverId = sessionStorage.getItem('chatUserId');
+    this.receiverId = sessionStorage.getItem('chatUserId');
     this.userName = sessionStorage.getItem('userName');
     // const youtubeUrl = sessionStorage.getItem('videoURL');
     // if (youtubeUrl) {
@@ -85,6 +86,10 @@ export class Chat implements OnInit, OnDestroy {
       '6aa79fd3b0d5cd1f5fa84742',
       '6aa79fedb0d5cd1f5fa84744'
     ].includes(this.userId);
+
+    this.scrollInterval = setInterval(() => {
+      this.scrollToBottom();
+    }, 100);
   }
 
   startHeartbeat() {
@@ -109,7 +114,7 @@ export class Chat implements OnInit, OnDestroy {
         this.conversationId = response.data[0]._id;
         var receiverID = response.data[0].participants
         receiverID = receiverID.filter((id: any) => id !== this.userId);
-        this.receiverId = receiverID[0]; 
+        this.receiverId = receiverID[0];
         this.startMessagePolling();
         this.markMessagesAsRead();
       },
@@ -179,6 +184,7 @@ export class Chat implements OnInit, OnDestroy {
                 msg?.isTemp === true
             );
 
+          //this.scrollToBottom();
           // --------------------------------
           // SERVER DATA
           // --------------------------------
@@ -249,7 +255,6 @@ export class Chat implements OnInit, OnDestroy {
 
 
   onMessagesScroll(): void {
-
     if (!this.messagesContainer) return;
 
     const element = this.messagesContainer.nativeElement;
@@ -262,28 +267,15 @@ export class Chat implements OnInit, OnDestroy {
     this.isUserAtBottom = distanceFromBottom <= 50;
   }
 
-  scrollToBottom(force: boolean = false): void {
+  scrollToBottom(): void {
+    if (!this.messagesContainer) return;
 
-    if (!this.messagesContainer) {
-      return;
-    }
+    // User manually scrolled up
+    if (!this.isUserAtBottom) return;
 
-    if (this.isKeyboardOpen && !force) {
-      return;
-    }
+    const element = this.messagesContainer.nativeElement;
 
-    if (!force && !this.isUserAtBottom) {
-      return;
-    }
-
-    requestAnimationFrame(() => {
-
-      const element = this.messagesContainer.nativeElement;
-
-      element.scrollTop = element.scrollHeight;
-
-      this.isUserAtBottom = true;
-    });
+    element.scrollTop = element.scrollHeight;
   }
 
 
@@ -387,6 +379,9 @@ export class Chat implements OnInit, OnDestroy {
       localMessage
     ];
 
+    this.isUserAtBottom = true;
+
+
     // Clear input immediately
     this.text = '';
     this.replyingTo = null;
@@ -396,16 +391,7 @@ export class Chat implements OnInit, OnDestroy {
 
     // Scroll immediately
     requestAnimationFrame(() => {
-
-      if (this.messagesContainer) {
-
-        const element =
-          this.messagesContainer.nativeElement;
-
-        element.scrollTop =
-          element.scrollHeight;
-      }
-
+      this.scrollToBottom();
     });
 
     // --------------------------------
@@ -451,8 +437,7 @@ export class Chat implements OnInit, OnDestroy {
           // IMPORTANT:
           // Don't replace the entire array.
           // Don't scroll.
-          // Don't reload messages.
-
+          // Don't reload messages. 
           this.cdr.detectChanges();
         }
 
@@ -650,7 +635,9 @@ export class Chat implements OnInit, OnDestroy {
     this.readSubscription?.unsubscribe();
     this.onlineSubscription?.unsubscribe();
     this.heartbeatSubscription?.unsubscribe();
-
+    if (this.scrollInterval) {
+      clearInterval(this.scrollInterval);
+    }
     if (window.visualViewport) {
 
       window.visualViewport.removeEventListener(

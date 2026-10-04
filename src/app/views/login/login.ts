@@ -80,7 +80,7 @@ export class Login implements OnInit {
         );
         this.router.navigate(['/dashboard']);
         
-
+        console.log(response.user.notificationsEnabled)
        if (response.user.notificationsEnabled) {
         this.pushService.enablePush().catch(error => {
           console.error('Push registration failed:', error);
