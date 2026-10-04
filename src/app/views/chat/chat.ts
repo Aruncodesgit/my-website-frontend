@@ -25,7 +25,7 @@ export class Chat implements OnInit, OnDestroy {
   messageSubscription!: Subscription;
   readSubscription!: Subscription;
   onlineSubscription!: Subscription;
- messageData: any[] = [];
+  messageData: any[] = [];
   userName: any;
   receiverUserName: any;
   receiverLastSeen: any;
@@ -40,11 +40,11 @@ export class Chat implements OnInit, OnDestroy {
   currentYoutubeVideoId: any;
   @ViewChild('messagesContainer') messagesContainer!: ElementRef;
   isUserAtBottom = true;
-isInitialMessageLoad = true;
-isKeyboardOpen = false;
-private lastMessageId: string | null = null;
+  isInitialMessageLoad = true;
+  isKeyboardOpen = false;
+  private lastMessageId: string | null = null;
   replyingTo: any = null;
-  private initialViewportHeight =  window.visualViewport?.height || window.innerHeight;
+  private initialViewportHeight = window.visualViewport?.height || window.innerHeight;
   constructor(private breakpointObserver: BreakpointObserver, public common: Common, private router: Router, private cdr: ChangeDetectorRef) {
     this.breakpointObserver
       .observe(['(max-width: 767px)'])
@@ -69,11 +69,11 @@ private lastMessageId: string | null = null;
 
     if (window.visualViewport) {
 
-    window.visualViewport.addEventListener(
-      'resize',
-      this.viewportResizeHandler
-    );
-  }
+      window.visualViewport.addEventListener(
+        'resize',
+        this.viewportResizeHandler
+      );
+    }
 
     this.getConversations()
     this.startHeartbeat();
@@ -149,57 +149,57 @@ private lastMessageId: string | null = null;
       });
   }
 
- startMessagePolling(): void {
-  this.messageSubscription = timer(0, 500)
-    .pipe(
-      exhaustMap(() => this.common.getMessages())
-    )
-    .subscribe({
-      next: (response: any) => {
+  startMessagePolling(): void {
+    this.messageSubscription = timer(0, 500)
+      .pipe(
+        exhaustMap(() => this.common.getMessages())
+      )
+      .subscribe({
+        next: (response: any) => {
 
-        const newMessages: any[] =
-          Array.isArray(response?.data) ? response.data : [];
+          const newMessages: any[] =
+            Array.isArray(response?.data) ? response.data : [];
 
-        const oldMessages: any[] =
-          Array.isArray(this.messageData) ? this.messageData : [];
+          const oldMessages: any[] =
+            Array.isArray(this.messageData) ? this.messageData : [];
 
-        const oldLastId =
-          oldMessages.length > 0
-            ? oldMessages[oldMessages.length - 1]?._id ?? null
-            : null;
+          const oldLastId =
+            oldMessages.length > 0
+              ? oldMessages[oldMessages.length - 1]?._id ?? null
+              : null;
 
-        const newLastId =
-          newMessages.length > 0
-            ? newMessages[newMessages.length - 1]?._id ?? null
-            : null;
+          const newLastId =
+            newMessages.length > 0
+              ? newMessages[newMessages.length - 1]?._id ?? null
+              : null;
 
-        const hasNewMessage = oldLastId !== newLastId;
+          const hasNewMessage = oldLastId !== newLastId;
 
-        this.messageData = newMessages;
+          this.messageData = newMessages;
 
-        // New message received
-        if (hasNewMessage && newMessages.length > 0) {
-          this.scrollToBottom();
+          // New message received
+          if (hasNewMessage && newMessages.length > 0) {
+            this.scrollToBottom();
+          }
+
+          const hasUnreadMessage = this.messageData.some(
+            (msg: any) =>
+              msg?.receiverId === this.userId &&
+              msg?.isRead === false
+          );
+
+          if (hasUnreadMessage) {
+            this.markMessagesAsRead();
+          }
+
+          this.cdr.detectChanges();
+        },
+
+        error: (error: any) => {
+          console.error('Failed to fetch messages:', error);
         }
-
-        const hasUnreadMessage = this.messageData.some(
-          (msg: any) =>
-            msg?.receiverId === this.userId &&
-            msg?.isRead === false
-        );
-
-        if (hasUnreadMessage) {
-          this.markMessagesAsRead();
-        }
-
-        this.cdr.detectChanges();
-      },
-
-      error: (error: any) => {
-        console.error('Failed to fetch messages:', error);
-      }
-    });
-}
+      });
+  }
 
   onMessagesScroll(): void {
 
@@ -215,59 +215,55 @@ private lastMessageId: string | null = null;
     this.isUserAtBottom = distanceFromBottom <= 50;
   }
 
-   scrollToBottom(force: boolean = false): void {
-
-  setTimeout(() => {
+  scrollToBottom(force: boolean = false): void {
 
     if (!this.messagesContainer) {
       return;
     }
 
-    // Never automatically scroll while keyboard is open
     if (this.isKeyboardOpen && !force) {
       return;
     }
-
-    const element =
-      this.messagesContainer.nativeElement;
 
     if (!force && !this.isUserAtBottom) {
       return;
     }
 
-    element.scrollTop =
-      element.scrollHeight;
+    requestAnimationFrame(() => {
 
-    this.isUserAtBottom = true;
+      const element = this.messagesContainer.nativeElement;
 
-  }, 50);
-}
+      element.scrollTop = element.scrollHeight;
 
-
- 
-
-private viewportResizeHandler = () => {
-
-  if (!this.isMobile) {
-    return;
+      this.isUserAtBottom = true;
+    });
   }
 
-  const viewportHeight =
-    window.visualViewport?.height ||
-    window.innerHeight;
 
-  const heightDifference =
-    window.innerHeight - viewportHeight;
 
-  if (heightDifference > 150) {
 
-    this.isKeyboardOpen = true;
+  private viewportResizeHandler = () => {
 
-  } else {
+    if (!this.isMobile) {
+      return;
+    }
 
-    this.isKeyboardOpen = false;
-  }
-};
+    const viewportHeight =
+      window.visualViewport?.height ||
+      window.innerHeight;
+
+    const heightDifference =
+      window.innerHeight - viewportHeight;
+
+    if (heightDifference > 150) {
+
+      this.isKeyboardOpen = true;
+
+    } else {
+
+      this.isKeyboardOpen = false;
+    }
+  };
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent) {
@@ -279,70 +275,70 @@ private viewportResizeHandler = () => {
     this.isMessageFocused = true;
   }
 
-   sendMessage() {
-  if (this.editingMessageId) {
+  sendMessage() {
+    if (this.editingMessageId) {
 
-    this.common.editMessage(this.editingMessageId, this.text).subscribe(
-      (res: any) => {
-        if (res) {
-          this.editingMessageId = null;
+      this.common.editMessage(this.editingMessageId, this.text).subscribe(
+        (res: any) => {
+          if (res) {
+            this.editingMessageId = null;
+            this.text = '';
+            this.isMessageFocused = false;
+            this.cdr.detectChanges();
+          }
+        },
+        (error: any) => {
+          console.error('Failed to edit message:', error);
+        }
+      );
+
+    } else {
+
+      const messageText = this.text.trim();
+
+      if (!messageText) {
+        return;
+      }
+
+      this.common.sendMessage({
+        conversationId: this.conversationId,
+        receiverId: this.receiverId,
+        text: messageText,
+        replyTo: this.replyingTo?._id || null
+      }).subscribe({
+
+        next: (response: any) => {
+
+          console.log('Message sent successfully:', response);
+
+          // Immediately add sent message to UI
+          if (response?.data) {
+            this.messageData = [
+              ...(this.messageData || []),
+              response.data
+            ];
+          }
+
           this.text = '';
+          this.replyingTo = null;
           this.isMessageFocused = false;
+
           this.cdr.detectChanges();
+
+          // Scroll only once
+          setTimeout(() => {
+            this.messageInput.nativeElement.style.height = '52px';
+            this.scrollToBottom(true);
+          }, 50);
+        },
+
+        error: (error: any) => {
+          console.error('Failed to send message:', error);
         }
-      },
-      (error: any) => {
-        console.error('Failed to edit message:', error);
-      }
-    );
 
-  } else {
-
-    const messageText = this.text.trim();
-
-    if (!messageText) {
-      return;
+      });
     }
-
-    this.common.sendMessage({
-      conversationId: this.conversationId,
-      receiverId: this.receiverId,
-      text: messageText,
-      replyTo: this.replyingTo?._id || null
-    }).subscribe({
-
-      next: (response: any) => {
-
-        console.log('Message sent successfully:', response);
-
-        // Immediately add sent message to UI
-        if (response?.data) {
-          this.messageData = [
-            ...(this.messageData || []),
-            response.data
-          ];
-        }
-
-        this.text = '';
-        this.replyingTo = null;
-        this.isMessageFocused = false;
-
-        this.cdr.detectChanges();
-
-        // Scroll only once
-        setTimeout(() => {
-          this.messageInput.nativeElement.style.height = '52px';
-          this.scrollToBottom(true);
-        }, 50);
-      },
-
-      error: (error: any) => {
-        console.error('Failed to send message:', error);
-      }
-
-    });
   }
-}
 
   scrollToMessage(messageId: string, event: MouseEvent) {
 
@@ -515,13 +511,13 @@ private viewportResizeHandler = () => {
     this.onlineSubscription?.unsubscribe();
     this.heartbeatSubscription?.unsubscribe();
 
-     if (window.visualViewport) {
+    if (window.visualViewport) {
 
-    window.visualViewport.removeEventListener(
-      'resize',
-      this.viewportResizeHandler
-    );
-  }
+      window.visualViewport.removeEventListener(
+        'resize',
+        this.viewportResizeHandler
+      );
+    }
 
 
     this.showCopyId = ''
