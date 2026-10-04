@@ -137,64 +137,75 @@ export class Chat implements OnInit, OnDestroy {
       });
   }
 
-  startMessagePolling() {
+ startMessagePolling(): void {
 
-    this.messageSubscription = timer(0, 500)
-      .pipe(
-        exhaustMap(() => this.common.getMessages())
-      )
-      .subscribe({
+  this.messageSubscription = timer(0, 500)
+    .pipe(
+      exhaustMap(() => this.common.getMessages())
+    )
+    .subscribe({
 
-        next: (response: any) => {
+      next: (response: any) => {
 
-          const newMessages = response.data || [];
+        // Always make sure we have an array
+        const newMessages: any[] =
+          Array.isArray(response?.data)
+            ? response.data
+            : [];
 
-          // Get the last message currently displayed
-          const oldLastId =
-            this.messageData?.length > 0
-              ? this.messageData[this.messageData?.length - 1]._id
-              : null;
+        // Current last message
+        const oldMessages: any[] =
+          Array.isArray(this.messageData)
+            ? this.messageData
+            : [];
 
-          // Get the last message from server
-          const newLastId =
-            newMessages?.length > 0
-              ? newMessages[newMessages?.length - 1]._id
-              : null;
+        const oldLastId =
+          oldMessages.length > 0
+            ? oldMessages[oldMessages.length - 1]?._id ?? null
+            : null;
 
-          // Check whether a new message was actually added
-          const hasNewMessage = oldLastId !== newLastId;
+        // Server last message
+        const newLastId =
+          newMessages.length > 0
+            ? newMessages[newMessages.length - 1]?._id ?? null
+            : null;
 
-          // Update your message arrays 
-          this.messageData = newMessages;
+        // Check whether a new message was added
+        const hasNewMessage =
+          oldLastId !== newLastId;
 
-          // Only scroll when there is a NEW message
-          if (hasNewMessage) {
-            this.scrollToBottom();
-          }
+        // Update messages
+        this.messageData = newMessages;
 
-          // Check unread messages
-          const hasUnreadMessage = this.messageData.some(
-            (msg: any) =>
-              msg.receiverId === this.userId &&
-              msg.isRead === false
-          );
-
-          if (hasUnreadMessage) {
-            this.markMessagesAsRead();
-          }
-
-          this.cdr.detectChanges();
-        },
-
-        error: (error) => {
-          console.error(
-            'Failed to fetch messages:',
-            error
-          );
+        // Only scroll when a new message arrives
+        if (hasNewMessage && newMessages.length > 0) {
+          this.scrollToBottom();
         }
 
-      });
-  }
+        // Check unread messages safely
+        const hasUnreadMessage =
+          this.messageData.some(
+            (msg: any) =>
+              msg?.receiverId === this.userId &&
+              msg?.isRead === false
+          );
+
+        if (hasUnreadMessage) {
+          this.markMessagesAsRead();
+        }
+
+        this.cdr.detectChanges();
+      },
+
+      error: (error) => {
+        console.error(
+          'Failed to fetch messages:',
+          error
+        );
+      }
+
+    });
+}
 
   onMessagesScroll(): void {
 
