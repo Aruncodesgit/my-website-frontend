@@ -88,8 +88,10 @@ export class Chat implements OnInit, OnDestroy {
     ].includes(this.userId);
 
     this.scrollInterval = setInterval(() => {
-      this.scrollToBottom();
-    }, 100);
+  if (this.isUserAtBottom) {
+    this.scrollToBottom();
+  }
+}, 100);
   }
 
   startHeartbeat() {
