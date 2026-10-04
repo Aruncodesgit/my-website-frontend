@@ -43,10 +43,10 @@ export class Dashboard implements OnInit, OnDestroy {
     this.receiverId = sessionStorage.getItem('chatUserId');
     this.userName = sessionStorage.getItem('userName');
 
-    this.startGettingOnlinePolling(); 
-    this.startHeartbeat();
+    this.startGettingOnlinePolling();  
     this.getActivity()
-    this.getNotificationSettings()
+    this.getNotificationSettings();
+     this.startHeartbeat();
      this.accessChat = [
       '6aa79fd3b0d5cd1f5fa84742', 
       '6aa79fedb0d5cd1f5fa84744'
@@ -72,7 +72,7 @@ export class Dashboard implements OnInit, OnDestroy {
 
   startGettingOnlinePolling() {
 
-    this.onlineSubscription = timer(0, 1000)
+    this.onlineSubscription = timer(0, 200)
       .pipe(
         exhaustMap(() => this.common.getUserById(this.receiverId))
       )
