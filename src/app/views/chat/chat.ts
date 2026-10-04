@@ -25,7 +25,7 @@ export class Chat implements OnInit, OnDestroy {
   messageSubscription!: Subscription;
   readSubscription!: Subscription;
   onlineSubscription!: Subscription;
-  messageData: any;
+ messageData: any[] = [];
   userName: any;
   receiverUserName: any;
   receiverLastSeen: any;
@@ -40,8 +40,11 @@ export class Chat implements OnInit, OnDestroy {
   currentYoutubeVideoId: any;
   @ViewChild('messagesContainer') messagesContainer!: ElementRef;
   isUserAtBottom = true;
-  isInitialMessageLoad = true;
+isInitialMessageLoad = true;
+isKeyboardOpen = false;
+private lastMessageId: string | null = null;
   replyingTo: any = null;
+  private initialViewportHeight =  window.visualViewport?.height || window.innerHeight;
   constructor(private breakpointObserver: BreakpointObserver, public common: Common, private router: Router, private cdr: ChangeDetectorRef) {
     this.breakpointObserver
       .observe(['(max-width: 767px)'])
@@ -63,6 +66,15 @@ export class Chat implements OnInit, OnDestroy {
     //   // Optional: remove after reading
     //   sessionStorage.removeItem('selectedYoutubeUrl');
     // }
+
+    if (window.visualViewport) {
+
+    window.visualViewport.addEventListener(
+      'resize',
+      this.viewportResizeHandler
+    );
+  }
+
     this.getConversations()
     this.startHeartbeat();
 
@@ -138,57 +150,43 @@ export class Chat implements OnInit, OnDestroy {
   }
 
  startMessagePolling(): void {
-
   this.messageSubscription = timer(0, 500)
     .pipe(
       exhaustMap(() => this.common.getMessages())
     )
     .subscribe({
-
       next: (response: any) => {
 
-        // Always make sure we have an array
         const newMessages: any[] =
-          Array.isArray(response?.data)
-            ? response.data
-            : [];
+          Array.isArray(response?.data) ? response.data : [];
 
-        // Current last message
         const oldMessages: any[] =
-          Array.isArray(this.messageData)
-            ? this.messageData
-            : [];
+          Array.isArray(this.messageData) ? this.messageData : [];
 
         const oldLastId =
           oldMessages.length > 0
             ? oldMessages[oldMessages.length - 1]?._id ?? null
             : null;
 
-        // Server last message
         const newLastId =
           newMessages.length > 0
             ? newMessages[newMessages.length - 1]?._id ?? null
             : null;
 
-        // Check whether a new message was added
-        const hasNewMessage =
-          oldLastId !== newLastId;
+        const hasNewMessage = oldLastId !== newLastId;
 
-        // Update messages
         this.messageData = newMessages;
 
-        // Only scroll when a new message arrives
+        // New message received
         if (hasNewMessage && newMessages.length > 0) {
           this.scrollToBottom();
         }
 
-        // Check unread messages safely
-        const hasUnreadMessage =
-          this.messageData.some(
-            (msg: any) =>
-              msg?.receiverId === this.userId &&
-              msg?.isRead === false
-          );
+        const hasUnreadMessage = this.messageData.some(
+          (msg: any) =>
+            msg?.receiverId === this.userId &&
+            msg?.isRead === false
+        );
 
         if (hasUnreadMessage) {
           this.markMessagesAsRead();
@@ -197,13 +195,9 @@ export class Chat implements OnInit, OnDestroy {
         this.cdr.detectChanges();
       },
 
-      error: (error) => {
-        console.error(
-          'Failed to fetch messages:',
-          error
-        );
+      error: (error: any) => {
+        console.error('Failed to fetch messages:', error);
       }
-
     });
 }
 
@@ -221,20 +215,59 @@ export class Chat implements OnInit, OnDestroy {
     this.isUserAtBottom = distanceFromBottom <= 50;
   }
 
-  scrollToBottom(force: boolean = false): void {
-    setTimeout(() => {
-      if (!this.messagesContainer) return;
+   scrollToBottom(force: boolean = false): void {
 
-      if (!force && !this.isUserAtBottom) {
-        return;
-      }
+  setTimeout(() => {
 
-      const element = this.messagesContainer.nativeElement;
+    if (!this.messagesContainer) {
+      return;
+    }
 
-      element.scrollTop = element.scrollHeight;
-    }, 0);
+    // Never automatically scroll while keyboard is open
+    if (this.isKeyboardOpen && !force) {
+      return;
+    }
+
+    const element =
+      this.messagesContainer.nativeElement;
+
+    if (!force && !this.isUserAtBottom) {
+      return;
+    }
+
+    element.scrollTop =
+      element.scrollHeight;
+
+    this.isUserAtBottom = true;
+
+  }, 50);
+}
+
+
+ 
+
+private viewportResizeHandler = () => {
+
+  if (!this.isMobile) {
+    return;
   }
 
+  const viewportHeight =
+    window.visualViewport?.height ||
+    window.innerHeight;
+
+  const heightDifference =
+    window.innerHeight - viewportHeight;
+
+  if (heightDifference > 150) {
+
+    this.isKeyboardOpen = true;
+
+  } else {
+
+    this.isKeyboardOpen = false;
+  }
+};
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent) {
@@ -246,9 +279,11 @@ export class Chat implements OnInit, OnDestroy {
     this.isMessageFocused = true;
   }
 
-  sendMessage() {
-    if (this.editingMessageId) {
-      this.common.editMessage(this.editingMessageId, this.text).subscribe(res => {
+   sendMessage() {
+  if (this.editingMessageId) {
+
+    this.common.editMessage(this.editingMessageId, this.text).subscribe(
+      (res: any) => {
         if (res) {
           this.editingMessageId = null;
           this.text = '';
@@ -256,41 +291,58 @@ export class Chat implements OnInit, OnDestroy {
           this.cdr.detectChanges();
         }
       },
-        (error: any) => {
+      (error: any) => {
+        console.error('Failed to edit message:', error);
+      }
+    );
 
-        })
+  } else {
+
+    const messageText = this.text.trim();
+
+    if (!messageText) {
+      return;
     }
-    else {
-      this.common.sendMessage({
-        conversationId: this.conversationId,
-        receiverId: this.receiverId,
-        text: this.text.trim(),
-        replyTo: this.replyingTo?._id || null
-      }).subscribe({
 
-        next: (response: any) => {
+    this.common.sendMessage({
+      conversationId: this.conversationId,
+      receiverId: this.receiverId,
+      text: messageText,
+      replyTo: this.replyingTo?._id || null
+    }).subscribe({
 
-          console.log('Message sent successfully:', response);
+      next: (response: any) => {
 
-          this.text = '';
-          this.replyingTo = null;
-          this.isMessageFocused = false;
+        console.log('Message sent successfully:', response);
 
-          setTimeout(() => {
-            this.messageInput.nativeElement.style.height = '52px';
-          });
-
-          this.cdr.detectChanges();
-        },
-
-        error: (error: any) => {
-          console.error('Failed to send message:', error);
+        // Immediately add sent message to UI
+        if (response?.data) {
+          this.messageData = [
+            ...(this.messageData || []),
+            response.data
+          ];
         }
 
-      });
-    }
+        this.text = '';
+        this.replyingTo = null;
+        this.isMessageFocused = false;
 
+        this.cdr.detectChanges();
+
+        // Scroll only once
+        setTimeout(() => {
+          this.messageInput.nativeElement.style.height = '52px';
+          this.scrollToBottom(true);
+        }, 50);
+      },
+
+      error: (error: any) => {
+        console.error('Failed to send message:', error);
+      }
+
+    });
   }
+}
 
   scrollToMessage(messageId: string, event: MouseEvent) {
 
@@ -462,6 +514,15 @@ export class Chat implements OnInit, OnDestroy {
     this.readSubscription?.unsubscribe();
     this.onlineSubscription?.unsubscribe();
     this.heartbeatSubscription?.unsubscribe();
+
+     if (window.visualViewport) {
+
+    window.visualViewport.removeEventListener(
+      'resize',
+      this.viewportResizeHandler
+    );
+  }
+
 
     this.showCopyId = ''
   }
