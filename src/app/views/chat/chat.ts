@@ -128,7 +128,7 @@ export class Chat implements OnInit, OnDestroy {
 
   startGettingOnlinePolling() {
 
-    this.onlineSubscription = timer(0, 1000)
+    this.onlineSubscription = timer(0, 200)
       .pipe(
         exhaustMap(() => this.common.getUserById(this.receiverId))
       )
