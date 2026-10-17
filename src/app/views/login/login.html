@@ -22,7 +22,8 @@
                     <div class="error" *ngIf="errorMessage">
                         {{errorMessage}}
                     </div>
-                    <form class="php-email-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+                    <form class="php-email-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()" >
+                           
                         <div class="row gy-3">
                             <div class="col-md-12 email">
                                 <input type="text" formControlName="email" name="name"
@@ -32,13 +33,23 @@
                             <div class="col-md-12"><input type="text" formControlName="password" #passwordInput name="phone"
                                     class="form-control pswrd" placeholder="Password"></div>
 
-                            <div class="col-12 text-center">
-                                <!-- <div class="sent-message" [class.active]="successMessage">Your message has been sent. Thank
-                                you!</div> -->
+                            <div class="col-12 text-center"> 
                                 <button type="submit" class="btn-submit" [disabled]="!loginForm.valid"><i class="bi bi-box-arrow-in-right"></i> Login</button>
                             </div>
-                        </div>
+                        </div> 
                     </form>
+                       <!-- <div class="pattern-container">
+
+                            <button *ngFor="let number of numbers" (click)="selectNumber(number)">
+                                <span></span>
+                            </button>
+
+                        </div> 
+                        <button type="submit" class="btn-submit" (click)="loginWithPattern()"
+                            [disabled]="selectedPattern.length === 0"><i class="bi bi-box-arrow-in-right"></i>
+                            Login</button> -->
+ 
+
 
                 </div>
             </div>
@@ -50,4 +61,4 @@
 
 <div id="preloader" [ngClass]="isLoaderVisible == true ? 'block' : 'hide' ">
     <div class="loader"></div>
-  </div>
+</div>

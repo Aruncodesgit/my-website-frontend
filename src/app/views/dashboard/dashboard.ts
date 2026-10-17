@@ -43,12 +43,12 @@ export class Dashboard implements OnInit, OnDestroy {
     this.receiverId = sessionStorage.getItem('chatUserId');
     this.userName = sessionStorage.getItem('userName');
 
-    this.startGettingOnlinePolling();  
+    this.startGettingOnlinePolling();
     this.getActivity()
     this.getNotificationSettings();
-     this.startHeartbeat();
-     this.accessChat = [
-      '6aa79fd3b0d5cd1f5fa84742', 
+    this.startHeartbeat();
+    this.accessChat = [
+      '6aa79fd3b0d5cd1f5fa84742',
       '6aa79fedb0d5cd1f5fa84744'
     ].includes(this.userId);
 
@@ -68,7 +68,7 @@ export class Dashboard implements OnInit, OnDestroy {
         }
       });
   }
- 
+
 
   startGettingOnlinePolling() {
 
@@ -117,7 +117,7 @@ export class Dashboard implements OnInit, OnDestroy {
     this.router.navigate(['/youtube'])
   }
 
-    toggleNotifications() { 
+  toggleNotifications() {
 
     const payload = {
       enabled: this.notificationsEnabled
@@ -129,23 +129,24 @@ export class Dashboard implements OnInit, OnDestroy {
 
     }
 
-   this.common.updateNotificationSettings(payload.enabled).subscribe(
+    this.common.updateNotificationSettings(payload.enabled).subscribe(
       (response: any) => {
         // Handle success if needed
       },
       (error: any) => {
         // Handle error if needed
       }
-    );   
+    );
   }
 
   getNotificationSettings() {
     this.common.getNotificationSettings().subscribe(
-      (response: any) => { 
+      (response: any) => {
         this.notificationsEnabled = response.notificationsEnabled;
-      
-      } 
-    )}            
+
+      }
+    )
+  }
 
 
 

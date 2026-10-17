@@ -19,6 +19,8 @@ export class Login implements OnInit {
   errorMessage: any;
   email: any;
   @ViewChild('passwordInput') passwordInput!: ElementRef<HTMLInputElement>;
+  numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+  selectedPattern: number[] = [];
   constructor(private cdr: ChangeDetectorRef, private pushService: PushService, private breakpointObserver: BreakpointObserver, private fb: FormBuilder, private common: Common,
     private router: Router
   ) {
@@ -37,6 +39,12 @@ export class Login implements OnInit {
 
   }
 
+  selectNumber(number: number): void {
+
+    this.selectedPattern.push(number);
+    console.log('Selected pattern:', this.selectedPattern);
+  }
+
   fill() {
     this.email += '@gmail.com';
     setTimeout(() => {
@@ -44,14 +52,17 @@ export class Login implements OnInit {
     });
   }
 
+  loginWithPattern(){
+
+  }
 
   onSubmit() {
     this.isLoaderVisible = true;
     this.common.login(this.loginForm.value).subscribe({
 
       next: async (response: any) => {
-         this.isLoaderVisible = false;
-          this.router.navigate(['/dashboard']);
+        this.isLoaderVisible = false;
+        this.router.navigate(['/dashboard']);
         console.log(
           'Login successful:',
           response
@@ -78,17 +89,17 @@ export class Login implements OnInit {
         sessionStorage.setItem(
           'userName',
           response.user.name
-        ); 
-        
+        );
+
         console.log(response.user.notificationsEnabled)
-       if (response.user.notificationsEnabled) {
-        this.pushService.enablePush().catch(error => {
-          console.error('Push registration failed:', error);
-        });
-      }
+        if (response.user.notificationsEnabled) {
+          this.pushService.enablePush().catch(error => {
+            console.error('Push registration failed:', error);
+          });
+        }
 
 
-        
+
 
       },
 

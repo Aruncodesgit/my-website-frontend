@@ -428,3 +428,7 @@ color-mix(in srgb, var(--accent-color) 70%, #f06cae));
 color-mix(in srgb, var(--accent-color) 30%, transparent);
     transition: all 0.3s ease;
 }
+
+.write {
+        min-height: 60px;
+}

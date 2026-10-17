@@ -36,9 +36,9 @@
                                 You added &nbsp;|&nbsp; {{common.formatLastSeen(l.createdAt)}}
                             </span>
                         </div>
-                        <button class="link-action" (click)="markYoutubeLinkAsRead(l, 'chat')">
-                            <i class="bi bi-chat-dots"></i>
-                        </button>&nbsp;&nbsp;
+                        <!-- <button class="link-action" (click)="markYoutubeLinkAsRead(l, 'chat')">
+                            <i class="bi bi-chat-dots"></i> 
+                        </button>&nbsp;&nbsp;-->
                         <a class="link-action" (click)="markYoutubeLinkAsRead(l, '')" [href]="l.link" target="_bank">
                             <i class="bi bi-box-arrow-up-right"></i>
                         </a>
@@ -75,7 +75,7 @@
         <form [formGroup]="linkForm" (ngSubmit)="onSubmit()">
 
             <div class="input-group">
-                <textarea formControlName="comments" rows="2" placeholder="Write anything...">
+                <textarea class="write" formControlName="comments" rows="2" placeholder="Write anything...">
     </textarea>
 
             </div>
