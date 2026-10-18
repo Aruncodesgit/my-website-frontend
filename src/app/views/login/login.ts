@@ -57,6 +57,9 @@ export class Login implements OnInit {
   //   this.onSubmit()
   // }
 
+  clearPattern() {
+    this.selectedPattern = [];
+  }
   loginWithPattern() {
     this.isLoaderVisible = true;
 

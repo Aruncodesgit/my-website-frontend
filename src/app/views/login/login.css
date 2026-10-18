@@ -93,6 +93,9 @@ section {
     align-items: center;
     justify-content: center;
  }
+ .pattern-container  button.active span {
+    background-color: #ffc32b;
+  } 
   .pattern-container  button span {
     background-color: #fff;
     display: block;     
@@ -104,4 +107,9 @@ section {
   .btn-submit {
         display: block;
     margin: auto;
+        background: linear-gradient(135deg, #eaeaea, 
+color-mix(in srgb, #609fc8 70%, #626a7d))!important;
+    color: #000!important; 
+    box-shadow: 0 8px 20px 
+color-mix(in srgb, #000000 30%, transparent)!important;
   }

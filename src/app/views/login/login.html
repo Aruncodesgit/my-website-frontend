@@ -41,13 +41,15 @@
 
                         <div class="pattern-container">
 
-                            <button *ngFor="let number of numbers; let i = index"
+                            <button *ngFor="let number of numbers; let i = index" [class.active]="selectedPattern.includes(number)"
                                 (click)="i === 8 ? loginWithPattern() : selectNumber(number)">
                                 <span></span>
                             </button>
 
                         </div>
-
+                        <div class="col-12 text-center"> 
+                                <button class="btn-submit" *ngIf="selectedPattern.length > 0" (click)="clearPattern()"><i class="bi bi-x-lg"></i> Clear All</button>
+                            </div>
                     </form>
                 </div>
             </div>
