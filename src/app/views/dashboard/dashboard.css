@@ -561,14 +561,25 @@ background: radial-gradient(circle at 85% 100%, rgba(255, 8, 0, 0.18), transpare
 
 .card-content h3 {
 
-    margin: 0 0 5px;
+    margin: -13px 0 5px;
 
     font-size: 17px;
     font-weight: 600;
 
     color: #ffffff;
 }
-
+.card-content  span {
+        position: absolute;
+    bottom: 12px;
+    background-color: #f1af0b;
+    padding: 0px 5px;
+    border-radius: 3px;
+    font-size: 13px;
+    color: #000;
+    font-weight: 500; 
+    height: 16px;
+    line-height: 1.3;
+}
 .card-content p {
 
     margin: 0;

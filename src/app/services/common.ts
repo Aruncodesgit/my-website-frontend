@@ -68,6 +68,17 @@ export class Common {
     );
   }
 
+  getUnreadCount() {
+    return this.http.get(
+      environment.apiProdUrl + '/message/unread-count',
+      {
+        headers: {
+          Authorization: `Bearer ${this.getToken()}`
+        }
+      }
+    );
+  }
+
   readMessage(id: string) {
 
     return this.http.put(
@@ -144,6 +155,17 @@ export class Common {
       }
     );
 
+  }
+
+   getlinkCount() {
+    return this.http.get(
+      environment.apiProdUrl + '/youtube/unread-count',
+      {
+        headers: {
+          Authorization: `Bearer ${this.getToken()}`
+        }
+      }
+    );
   }
 
   getActivity() {

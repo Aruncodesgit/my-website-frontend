@@ -29,7 +29,8 @@ export class Dashboard implements OnInit, OnDestroy {
   accessChat: boolean = false;
   showDrawer = false;
   notificationsEnabled = false;
-
+  unreadmsgCount = 0;
+  unreadLinkCount = 0;
   constructor(private breakpointObserver: BreakpointObserver, private pushService: PushService, private cdr: ChangeDetectorRef, public common: Common, private router: Router) {
     this.breakpointObserver
       .observe(['(max-width: 767px)'])
@@ -44,6 +45,7 @@ export class Dashboard implements OnInit, OnDestroy {
     this.userName = sessionStorage.getItem('userName');
 
     this.startGettingOnlinePolling();
+    this.getUnreadCount();
     this.getActivity()
     this.getNotificationSettings();
     this.startHeartbeat();
@@ -67,6 +69,27 @@ export class Dashboard implements OnInit, OnDestroy {
           //console.error('Heartbeat failed:', error);
         }
       });
+  }
+
+  getUnreadCount() {
+    this.common.getUnreadCount().subscribe({
+      next: (response: any) => {
+        this.unreadmsgCount = response.unreadCount;
+      },
+      error: (error: any) => {
+        console.error('Unread count error:', error);
+      }
+    });
+
+    this.common.getlinkCount().subscribe({
+      next: (response: any) => {
+        this.unreadLinkCount = response.unreadCount;
+      },
+      error: (error: any) => {
+        console.error('Unread count error:', error);
+      }
+    });
+
   }
 
 
