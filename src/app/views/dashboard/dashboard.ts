@@ -48,8 +48,8 @@ export class Dashboard implements OnInit, OnDestroy {
     this.getNotificationSettings();
     this.startHeartbeat();
     this.accessChat = [
-      '6aa79fd3b0d5cd1f5fa84742',
-      '6aa79fedb0d5cd1f5fa84744'
+      '6ad4a115dc1e50842e7e47d8',
+      '6ad4a132dc1e50842e7e47da'
     ].includes(this.userId);
 
   }

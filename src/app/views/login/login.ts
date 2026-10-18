@@ -52,15 +52,19 @@ export class Login implements OnInit {
     });
   }
 
-  loginWithPattern(){
+  // loginWithPattern(){
+  //   console.log('Logging in with pattern:', this.selectedPattern);
+  //   this.onSubmit()
+  // }
 
-  }
-
-  onSubmit() {
+  loginWithPattern() {
     this.isLoaderVisible = true;
-    this.common.login(this.loginForm.value).subscribe({
 
-      next: async (response: any) => {
+    const password = this.selectedPattern.join('');
+
+    this.common.login(password).subscribe({
+
+      next: async (response: any) => { 
         this.isLoaderVisible = false;
         this.router.navigate(['/dashboard']);
         console.log(
@@ -102,16 +106,19 @@ export class Login implements OnInit {
 
 
       },
-
+      
       error: (error: any) => {
-
-        console.error(
-          'Login failed:',
-          error
-        );
-
+        this.isLoaderVisible = false; 
+        if (error.status === 401) {
+          this.errorMessage = 'Invalid pattern. Please try again.';
+          console.log(this.errorMessage);
+        } else {
+          this.errorMessage = 'An error occurred during login. Please try again later.';
+        } 
+         this.cdr.detectChanges();
       }
 
     });
+
   }
 }

@@ -22,7 +22,7 @@ export class Youtube implements OnInit {
   links: any[] = [];
   heartbeatSubscription!: Subscription;
   youtubeSubscription!: Subscription;
-  accessChat: boolean = true;
+  accessChat: boolean = false;
   userId:any;
   constructor(private fb: FormBuilder, private breakpointObserver: BreakpointObserver, private cdr: ChangeDetectorRef, public common: Common, private router: Router) {
     this.breakpointObserver
@@ -43,9 +43,9 @@ export class Youtube implements OnInit {
  
     this.getYoutubeLinks()
 
-    this.accessChat = [
-      '6aa79fd3b0d5cd1f5fa84742',
-      '6aa79fedb0d5cd1f5fa84744'
+  this.accessChat = [
+      '6ad4a115dc1e50842e7e47d8',
+      '6ad4a132dc1e50842e7e47da'
     ].includes(this.userId);
   }
 

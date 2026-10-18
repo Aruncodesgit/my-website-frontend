@@ -22,9 +22,9 @@
                     <div class="error" *ngIf="errorMessage">
                         {{errorMessage}}
                     </div>
-                    <form class="php-email-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()" >
-                           
-                        <div class="row gy-3">
+                    <form class="php-email-form">
+
+                        <!-- <div class="row gy-3">
                             <div class="col-md-12 email">
                                 <input type="text" formControlName="email" name="name"
                                     class="form-control" placeholder="Email" [(ngModel)]="email">
@@ -36,21 +36,19 @@
                             <div class="col-12 text-center"> 
                                 <button type="submit" class="btn-submit" [disabled]="!loginForm.valid"><i class="bi bi-box-arrow-in-right"></i> Login</button>
                             </div>
-                        </div> 
-                    </form>
-                       <!-- <div class="pattern-container">
+                        </div> -->
 
-                            <button *ngFor="let number of numbers" (click)="selectNumber(number)">
+
+                        <div class="pattern-container">
+
+                            <button *ngFor="let number of numbers; let i = index"
+                                (click)="i === 8 ? loginWithPattern() : selectNumber(number)">
                                 <span></span>
                             </button>
 
-                        </div> 
-                        <button type="submit" class="btn-submit" (click)="loginWithPattern()"
-                            [disabled]="selectedPattern.length === 0"><i class="bi bi-box-arrow-in-right"></i>
-                            Login</button> -->
- 
+                        </div>
 
-
+                    </form>
                 </div>
             </div>
 

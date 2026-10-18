@@ -15,8 +15,13 @@ section {
         }
     }
 
-    .php-email-form {
-        margin-top: 100px;
+    .php-email-form { 
+            width: 88%;
+    margin: auto;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 150px;
     }
 }
 
@@ -72,7 +77,7 @@ section {
 }
 
 .pattern-container {
-  width: 280px;
+  width: 90%;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 14px;
@@ -91,8 +96,8 @@ section {
   .pattern-container  button span {
     background-color: #fff;
     display: block;     
-    width: 10px;
-    height: 10px;   
+    width: 15px;
+    height: 15px;   
     border-radius: 50%;
   }
 

@@ -83,15 +83,15 @@ export class Chat implements OnInit, OnDestroy {
     this.startHeartbeat();
 
     this.accessChat = [
-      '6aa79fd3b0d5cd1f5fa84742',
-      '6aa79fedb0d5cd1f5fa84744'
+      '6ad4a115dc1e50842e7e47d8',
+      '6ad4a132dc1e50842e7e47da'
     ].includes(this.userId);
 
     this.scrollInterval = setInterval(() => {
-  if (this.isUserAtBottom) {
-    this.scrollToBottom();
-  }
-}, 100);
+      if (this.isUserAtBottom) {
+        this.scrollToBottom();
+      }
+    }, 100);
   }
 
   startHeartbeat() {
@@ -552,7 +552,7 @@ export class Chat implements OnInit, OnDestroy {
         this.cdr.detectChanges();
       },
       (error: any) => {
-        this.isLoaderVisible = false; 
+        this.isLoaderVisible = false;
       }
     );
   }

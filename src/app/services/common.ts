@@ -19,7 +19,7 @@ export class Common {
   login(data: any) {
     return this.http.post(
       environment.apiProdUrl + '/login',
-      data
+       { password: data }
     );
   }
 
